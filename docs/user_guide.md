@@ -46,8 +46,8 @@ The model reads two kinds of data:
 | `contrib/` | emission totals, land cover, land-use CO2 and the contribution-run forcing data | scenario inputs |
 | `AGAGE/`, `NOAA/` | observed concentrations | scenario inputs |
 
-The scenario inputs are distributed separately (the data repository SCM4OPT_PY_DAT, or
-archives). Use them from their own folder with `export SCM4OPT_DATA=/path/to/SCM4OPT_PY_DAT`,
+The scenario inputs are distributed separately as SCM4OPT_PY_DAT, published on Zenodo:
+[doi:10.5281/zenodo.23718272](https://doi.org/10.5281/zenodo.23718272). Use them from their own folder with `export SCM4OPT_DATA=/path/to/SCM4OPT_PY_DAT`,
 or copy the four folders into `scm4opt/data/`. They are listed with their size and SHA-256
 checksum in `inputs_manifest.csv` of the data folder:
 

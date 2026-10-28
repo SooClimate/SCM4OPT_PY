@@ -132,7 +132,7 @@ Report symbols in report order.
 
 ### `per_step_names(reg=None)`
 
-### `check_registry(reg=None, mapping=None, known=frozenset({'doe_heatflux', 'doe_heatcontent'}))`
+### `check_registry(reg=None, mapping=None, known=frozenset({'doe_heatcontent', 'doe_heatflux'}))`
 
 Problems found in the registry: a list of strings (empty if none).
 
@@ -144,7 +144,7 @@ mapping : the RCMIP3 output mapping (report.load_output_mapping()); its conversi
 One row per reported RCMIP3 variable: registry unit, RCMIP unit, the factor
 implied by the units and the factor the export applies (scale x steps per year).
 
-### `check_rcmip_mapping(mapping, reg=None, produced=None, known=frozenset({'doe_heatflux', 'doe_heatcontent'}))`
+### `check_rcmip_mapping(mapping, reg=None, produced=None, known=frozenset({'doe_heatcontent', 'doe_heatflux'}))`
 
 Problems of the RCMIP3 export conversions (see rcmip_conversions).
 

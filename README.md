@@ -29,10 +29,11 @@ The parameter tables (CMIP6 calibrations, natural forcing, RCMIP3 output mapping
 ensemble members, ...) are in `scm4opt/data/`, tracked in git and installed with the
 package. The scenario inputs (`RCMIP3/`, `contrib/`, `AGAGE/`, `NOAA/`: emissions,
 concentrations, land cover, observations, forcing data; 7933 files) are distributed
-separately, in the data repository SCM4OPT_PY_DAT. Point the model to it:
+separately as SCM4OPT_PY_DAT, published on Zenodo:
+[doi:10.5281/zenodo.23718272](https://doi.org/10.5281/zenodo.23718272). Download it into
+a folder and point the model to that folder:
 
 ```bash
-git clone <SCM4OPT_PY_DAT repository> /path/to/SCM4OPT_PY_DAT
 export SCM4OPT_DATA=/path/to/SCM4OPT_PY_DAT      # or --dat_dir=... per run
 scm4opt data verify                              # files against inputs_manifest.csv
 ```
