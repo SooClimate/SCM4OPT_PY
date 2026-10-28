@@ -1,0 +1,17 @@
+__pycache__/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+# GAMS data files (the model reads CSV only)
+*.gdx
+# model outputs
+exe/
+rcmip_*/
+out/
+# scenario inputs (large; distributed separately)
+scm4opt/data/RCMIP3/
+scm4opt/data/AGAGE/
+scm4opt/data/NOAA/
+scm4opt/data/contrib/
+scm4opt/data/inputs_manifest.csv

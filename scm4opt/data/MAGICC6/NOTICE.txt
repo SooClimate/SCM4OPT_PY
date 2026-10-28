@@ -1,0 +1,20 @@
+MAGICC6 parameter values
+========================
+
+land_c4mip_bern.csv holds the land carbon-cycle parameters of SCM4OPT's "MAGICC6 defaults"
+mode (used when no --cm6mdl calibration is selected). The values are taken from the
+configuration files distributed with the compiled MAGICC6 executable
+(MAGTUNE_C4MIP_BERN.CFG, MAGCFG_DEFAULTALL_69.CFG; columns magicc6_name, magicc6_file).
+
+The MAGICC6 executable and its distributed files are licensed by Tom Wigley, Sarah Raper and
+Malte Meinshausen under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0
+Unported License (https://creativecommons.org/licenses/by-nc-sa/3.0/). This file is
+therefore provided under the same terms (attribution, non-commercial use only, share
+derivatives alike); it is not covered by the license of the SCM4OPT code. The MAGICC
+developers ask that derivatives be fed back to them (www.magicc.org).
+
+If you use these values, please cite:
+Meinshausen, M., S. C. B. Raper and T. M. L. Wigley (2011). Emulating coupled
+atmosphere-ocean and carbon cycle models with a simpler model, MAGICC6 - Part 1: Model
+description and calibration. Atmospheric Chemistry and Physics 11, 1417-1456.
+doi:10.5194/acp-11-1417-2011

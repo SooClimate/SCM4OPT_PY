@@ -1,0 +1,121 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below, together with the SCM4OPT papers listed under references."
+title: "SCM4OPT_PY: Simple Climate Model for OPTimization (Python implementation)"
+version: "4.1.0.dev0"
+license: GPL-3.0-or-later
+type: software
+authors:
+  - family-names: Su
+    given-names: Xuanming
+    affiliation: "Japan Agency for Marine-Earth Science and Technology (JAMSTEC)"
+  - family-names: Tachiiri
+    given-names: Kaoru
+    affiliation: "Japan Agency for Marine-Earth Science and Technology (JAMSTEC)"
+keywords:
+  - simple climate model
+  - reduced-complexity climate model
+  - carbon cycle
+  - atmospheric chemistry
+  - RCMIP
+preferred-citation:
+  type: article
+  title: "Identifying crucial emission sources under low forcing scenarios by a comprehensive attribution analysis"
+  authors:
+    - family-names: Su
+      given-names: Xuanming
+    - family-names: Tachiiri
+      given-names: Kaoru
+    - family-names: Tanaka
+      given-names: Katsumasa
+    - family-names: Watanabe
+      given-names: Michio
+    - family-names: Kawamiya
+      given-names: Michio
+  journal: "One Earth"
+  volume: 5
+  start: 1354
+  end: 1366
+  year: 2022
+  doi: 10.1016/j.oneear.2022.10.009
+references:
+  - type: article
+    title: "Reductions in atmospheric levels of non-CO2 greenhouse gases explain about a quarter of the 1998-2012 warming slowdown"
+    authors:
+      - family-names: Su
+        given-names: Xuanming
+      - family-names: Shiogama
+        given-names: Hideo
+      - family-names: Tanaka
+        given-names: Katsumasa
+      - family-names: Tachiiri
+        given-names: Kaoru
+      - family-names: Hajima
+        given-names: Tomohiro
+      - family-names: Watanabe
+        given-names: Michio
+      - family-names: Kawamiya
+        given-names: Michio
+      - family-names: Takahashi
+        given-names: Kiyoshi
+      - family-names: Yokohata
+        given-names: Tokuta
+    journal: "Communications Earth & Environment"
+    volume: 5
+    year: 2024
+    doi: 10.1038/s43247-024-01723-x
+  - type: article
+    title: "A simple object-oriented and open-source model for scientific and policy analyses of the global climate system - Hector v1.0"
+    authors:
+      - family-names: Hartin
+        given-names: Corinne A.
+      - family-names: Patel
+        given-names: Pralit
+      - family-names: Schwarber
+        given-names: Adria
+      - family-names: Link
+        given-names: Robert P.
+      - family-names: Bond-Lamberty
+        given-names: Benjamin P.
+    journal: "Geoscientific Model Development"
+    volume: 8
+    start: 939
+    end: 955
+    year: 2015
+    doi: 10.5194/gmd-8-939-2015
+  - type: article
+    title: "The compact Earth system model OSCAR v2.2: description and first results"
+    authors:
+      - family-names: Gasser
+        given-names: Thomas
+      - name: "et al."
+    journal: "Geoscientific Model Development"
+    volume: 10
+    start: 271
+    end: 319
+    year: 2017
+    doi: 10.5194/gmd-10-271-2017
+  - type: article
+    title: "Emulating coupled atmosphere-ocean and carbon cycle models with a simpler model, MAGICC6 - Part 1: Model description and calibration"
+    authors:
+      - family-names: Meinshausen
+        given-names: Malte
+      - family-names: Raper
+        given-names: Sarah C. B.
+      - family-names: Wigley
+        given-names: Tom M. L.
+    journal: "Atmospheric Chemistry and Physics"
+    volume: 11
+    start: 1417
+    end: 1456
+    year: 2011
+    doi: 10.5194/acp-11-1417-2011
+  - type: report
+    title: "Aggregated carbon cycle, atmospheric chemistry, and climate model (ACC2) - description of the forward and inverse modes"
+    authors:
+      - family-names: Tanaka
+        given-names: Katsumasa
+      - family-names: Kriegler
+        given-names: Elmar
+    institution:
+      name: "Max Planck Institute for Meteorology"
+    year: 2007

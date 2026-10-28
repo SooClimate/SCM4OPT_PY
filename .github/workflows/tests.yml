@@ -1,0 +1,113 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Test inputs from the data repository (SCM4OPT_PY_DAT)
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          repository: ${{ github.repository_owner }}/SCM4OPT_PY_DAT
+          path: scm4opt-data
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            inputs_manifest.csv
+            AGAGE/c2f6.csv
+            AGAGE/c3f8.csv
+            AGAGE/cc4f8.csv
+            AGAGE/ccl4.csv
+            AGAGE/cf4.csv
+            AGAGE/cfc11.csv
+            AGAGE/cfc113.csv
+            AGAGE/cfc114.csv
+            AGAGE/cfc115.csv
+            AGAGE/cfc12.csv
+            AGAGE/cfc13.csv
+            AGAGE/ch2cl2.csv
+            AGAGE/ch3br.csv
+            AGAGE/ch3ccl3.csv
+            AGAGE/ch3cl.csv
+            AGAGE/chcl3.csv
+            AGAGE/halon1211.csv
+            AGAGE/halon1301.csv
+            AGAGE/halon2402.csv
+            AGAGE/hcfc124.csv
+            AGAGE/hcfc132b.csv
+            AGAGE/hcfc133a.csv
+            AGAGE/hcfc141b.csv
+            AGAGE/hcfc142b.csv
+            AGAGE/hcfc22.csv
+            AGAGE/hfc125.csv
+            AGAGE/hfc134a.csv
+            AGAGE/hfc143a.csv
+            AGAGE/hfc152a.csv
+            AGAGE/hfc227ea.csv
+            AGAGE/hfc23.csv
+            AGAGE/hfc236fa.csv
+            AGAGE/hfc245fa.csv
+            AGAGE/hfc32.csv
+            AGAGE/hfc365mfc.csv
+            AGAGE/hfc4310mee.csv
+            AGAGE/nf3.csv
+            AGAGE/sf6.csv
+            AGAGE/so2f2.csv
+            NOAA/noaa_ch4_mm_gl.gdx.csv
+            NOAA/noaa_co2_mm_mlo.gdx.csv
+            NOAA/noaa_n2o_mm_gl.gdx.csv
+            NOAA/noaa_sf6_mm_gl.gdx.csv
+            RCMIP3/historical.csv
+            RCMIP3/historical_conc.csv
+            RCMIP3/ssp126.csv
+            RCMIP3/ssp585.csv
+            RCMIP3/ssp585_conc.csv
+            contrib/COMB_IAMC/total/SSP1_19_WORLD.csv
+            contrib/LC_LUH_IAMC/AFR/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/AFR/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/CHN/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/CHN/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/EUR/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/EUR/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/IND/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/IND/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/JPN/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/JPN/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/LAM/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/LAM/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/MEA/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/MEA/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/OAS/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/OAS/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/ROW/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/ROW/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/RUS/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/RUS/lc_SSP2_45.csv
+            contrib/LC_LUH_IAMC/USA/lc_SSP1_19.csv
+            contrib/LC_LUH_IAMC/USA/lc_SSP2_45.csv
+            contrib/LUC_BLUE_IAMC/WORLD/CO2_EMISS_LUC_SSP1_19.csv
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+      - name: Versions
+        run: python -c "import sys, numpy, pandas, scipy; print(sys.version, numpy.__version__, pandas.__version__, scipy.__version__)"
+      - name: Registry check
+        run: python -m scm4opt.core.registry
+      - name: Tests (inputs missing from the checkout are skipped)
+        env:
+          SCM4OPT_DATA: ${{ github.workspace }}/scm4opt-data
+        run: python -m pytest -q

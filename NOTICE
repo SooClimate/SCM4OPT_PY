@@ -1,0 +1,60 @@
+SCM4OPT_PY - Simple Climate Model for OPTimization, Python implementation
+Copyright (C) 2026 the SCM4OPT authors (see CITATION.cff)
+
+This program is free software: you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation, either
+version 3 of the License, or (at your option) any later version (see LICENSE).
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+
+Components derived from other models
+------------------------------------
+
+Hector ocean carbon model (scm4opt/physics/ocean_hector.py)
+  Ported from the four-box ocean of Hector v1.0, https://github.com/JGCRI/hector,
+  licensed under the GNU General Public License v3.0.
+  Hartin, C. A., Patel, P., Schwarber, A., Link, R. P., and Bond-Lamberty, B. P. (2015):
+  A simple object-oriented and open-source model for scientific and policy analyses of the
+  global climate system - Hector v1.0. Geosci. Model Dev., 8, 939-955,
+  doi:10.5194/gmd-8-939-2015.
+
+OSCAR (scm4opt/physics/ocean_oscar.py and parts of scm4opt/physics/chemistry.py)
+  The mixed-layer ocean carbon model and the OH / photolysis sink formulations follow
+  OSCAR v2, https://github.com/tgasser/OSCAR, distributed under the CeCILL Free Software
+  License Agreement v2.1, which permits distribution under the GNU GPL (Art. 5.3.4).
+  Gasser, T., Ciais, P., Boucher, O., Quilcaille, Y., Tortora, M., Bopp, L., and
+  Hauglustaine, D. (2017): The compact Earth system model OSCAR v2.2: description and first
+  results. Geosci. Model Dev., 10, 271-319, doi:10.5194/gmd-10-271-2017.
+
+DOECLIM energy-balance model (scm4opt/physics/doeclim.py)
+  Kriegler, E. (2005): Imprecise probability analysis for integrated assessment of climate
+  change. PhD thesis, University of Potsdam.
+  Tanaka, K. and Kriegler, E. (2007): Aggregated carbon cycle, atmospheric chemistry, and
+  climate model (ACC2) - description of the forward and inverse modes. Reports on Earth
+  System Science 40, Max Planck Institute for Meteorology, Hamburg.
+
+MAGICC6 (scm4opt/physics/land.py structure; scm4opt/data/MAGICC6/)
+  The land carbon-cycle formulation follows MAGICC6. The parameter values of the
+  MAGICC6-defaults mode are in scm4opt/data/MAGICC6/land_c4mip_bern.csv; they come from the
+  configuration files distributed with the MAGICC6 executable and are NOT covered by the
+  GNU GPL: they are licensed by T. Wigley, S. Raper and M. Meinshausen under the Creative
+  Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
+  (scm4opt/data/MAGICC6/NOTICE.txt).
+  Meinshausen, M., Raper, S. C. B., and Wigley, T. M. L. (2011): Emulating coupled
+  atmosphere-ocean and carbon cycle models with a simpler model, MAGICC6 - Part 1: Model
+  description and calibration. Atmos. Chem. Phys., 11, 1417-1456,
+  doi:10.5194/acp-11-1417-2011.
+
+SCM4OPT was developed from the climate module of AD-DICE2013R (DICE-2013R, W. Nordhaus).
+
+
+Data
+----
+
+The files in scm4opt/data/ other than scm4opt/data/MAGICC6/ are input data and parameter
+tables. The scenario inputs (RCMIP3/, contrib/, AGAGE/, NOAA/) are derived from external
+datasets (RCMIP, CEDS, LUH2, AGAGE, NOAA and others) and remain subject to the terms and
+citation requirements of those datasets.

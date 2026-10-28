@@ -1,0 +1,798 @@
+name,kind,module,dims,unit,time_basis,description,reference,report_order,report_group
+co2_init,parameter,chemistry,,ppm,none,Pre-industrial CO2 concentration used for the initial state,,,
+ch4_init,parameter,chemistry,,ppb,none,Initial (pre-industrial) CH4 concentration,,,
+n2o_init,parameter,chemistry,,ppb,none,Initial (pre-industrial) N2O concentration,,,
+co2_0,parameter,chemistry,,ppm,none,Reference CO2 concentration; CO2 anomalies are relative to it (284 ppm),,,
+ch4_0,parameter,chemistry,,ppb,none,Reference CH4 concentration; CH4 anomalies are relative to it,Etminan et al. (2016) / Myhre et al. (2013) baseline set (--ch4rfc),,
+n2o_0,parameter,chemistry,,ppb,none,Reference N2O concentration; N2O anomalies are relative to it,,,
+d_ch4_1850,parameter,chemistry,,ppb,none,CH4 concentration anomaly (from ch4_0) at the first step (1850),,,
+d_n2o_1850,parameter,chemistry,,ppb,none,N2O concentration anomaly (from n2o_0) at the first step (1850),,,
+alpha_ch4,parameter,chemistry,,MtC/ppb,none,Conversion of CH4 mixing ratio to atmospheric mass as carbon (0.1765 Tmol/ppb x 12 g/mol),,,
+scale_oh,parameter,chemistry,,1,none,"Scenario-dependent rescaling factor of the CH4 OH lifetime (0.4 for SSPs, else 0.64)",,,
+tau_ch4_oh,parameter,chemistry,,yr,none,Pre-industrial CH4 lifetime against tropospheric OH (rescaled by scale_oh),Prather et al. (2012); Naik et al. (2013),,
+tau_ch4_hv,parameter,chemistry,,yr,none,Pre-industrial CH4 stratospheric (photolysis) lifetime,"Prather et al. (2012, 2015)",,
+tau_ch4_soil,parameter,chemistry,,yr,none,CH4 lifetime against soil uptake,,,
+tau_ch4_ocean,parameter,chemistry,,yr,none,CH4 lifetime against ocean loss,,,
+oh_sink_form,parameter,chemistry,,1,none,Functional form of the OH dependence on ozone precursors: 'log' or 'lin' (option string),Holmes et al. (2013),,
+chi_oh_tatm,parameter,chemistry,,1,none,Logarithmic sensitivity of OH to atmospheric temperature,Holmes et al. (2013),,
+chi_oh_qatm,parameter,chemistry,,1,none,Logarithmic sensitivity of OH to atmospheric water vapour,Holmes et al. (2013),,
+chi_oh_o3,parameter,chemistry,,1,none,Logarithmic sensitivity of OH to stratospheric ozone column,Holmes et al. (2013),,
+chi_oh_ch4,parameter,chemistry,,1,none,Logarithmic sensitivity of OH to CH4 concentration (feedback),Holmes et al. (2013),,
+chi_oh_nox,parameter,chemistry,,1,none,Sensitivity of OH to NOx emissions (log form: dimensionless; lin form: per Mt N/yr),Holmes et al. (2013); Ehhalt et al. (2001),,
+chi_oh_co,parameter,chemistry,,1,none,Sensitivity of OH to CO emissions (log form: dimensionless; lin form: per MtC/yr),Holmes et al. (2013); Ehhalt et al. (2001),,
+chi_oh_voc,parameter,chemistry,,1,none,Sensitivity of OH to VOC emissions (log form: dimensionless; lin form: per Mt VOC/yr),Holmes et al. (2013); Ehhalt et al. (2001),,
+k_tatm,parameter,chemistry,,1,none,Ratio of atmospheric (tropospheric) to surface temperature change in the OH function,+/- 0.1; Holmes et al. (2013) (supp.),,
+k_qatm,parameter,chemistry,,1,none,Water-vapour scaling coefficient in the OH function,+/- 0.1; Holmes et al. (2013) (supp.),,
+tatm_0,parameter,chemistry,,K,none,Reference (pre-industrial) atmospheric temperature in the OH function,+/- 1; Holmes et al. (2013) (supp.),,
+k_svp,parameter,chemistry,,1,none,Coefficient of the saturation vapour pressure (Magnus) formula,Jacobson (2005) eq. 2.62,,
+t_svp,parameter,chemistry,,K,none,Temperature offset of the Magnus formula expressed relative to 0 degC (243.5 - 273.15),Jacobson (2005) eq. 2.62,,
+o3s_0,parameter,chemistry,,DU,none,Reference (pre-industrial) stratospheric ozone column,Cionni et al. (2010),,
+e_nox_oh,parameter,chemistry,,Mt N/yr,per_year,Reference NOx emission rate (as N) in the logarithmic OH dependence,Skeie et al. (2011) (tab. 1),,
+e_co_oh,parameter,chemistry,,MtC/yr,per_year,Reference CO emission rate (as C) in the logarithmic OH dependence,Skeie et al. (2011) (tab. 1),,
+e_voc_oh,parameter,chemistry,,Mt VOC/yr,per_year,Reference VOC emission rate (anthropogenic + biogenic) in the logarithmic OH dependence,Skeie et al. (2011) (tab. 1),,
+alpha_n2o,parameter,chemistry,,Mt N/ppb,none,Conversion of N2O mixing ratio to atmospheric mass as N (0.1765 Tmol/ppb x 28 g/mol),,,
+tau_n2o_hv,parameter,chemistry,,yr,none,Pre-industrial N2O stratospheric (photolysis) lifetime,also named chi_tau_N2O_hv; Prather et al. (2015) table 2,,
+chi_hv_n2o,parameter,chemistry,,1,none,Logarithmic sensitivity of the stratospheric sink to N2O concentration,Prather et al. (2015) table 3,,
+chi_hv_eesc,parameter,chemistry,,1,none,Logarithmic sensitivity of the stratospheric sink to EESC,Prather et al. (2015) table 3,,
+chi_hv_age,parameter,chemistry,,1,none,Logarithmic sensitivity of the stratospheric sink to the age of stratospheric air,Prather et al. (2015); Fleming et al. (2011),,
+gamma_age,parameter,chemistry,,1/K,none,Relative change of the age of stratospheric air per K of surface warming,,,
+tau_lag,parameter,chemistry,,yr,none,Time constant of the lagged (stratospheric) concentrations,,,
+chi_o3t_ch4,parameter,chemistry,,DU,none,Tropospheric ozone sensitivity to log(1 + CH4 anomaly/ch4_0),,,
+chi_o3t_co,parameter,chemistry,,DU yr/MtC,none,Tropospheric ozone sensitivity to CO emission rate (as C),,,
+chi_o3t_voc,parameter,chemistry,,DU yr/Mt VOC,none,Tropospheric ozone sensitivity to VOC emission rate,,,
+chi_o3t_nox,parameter,chemistry,,DU yr/Mt N,none,Tropospheric ozone sensitivity to NOx emission rate (as N),,,
+gamma_o3t,parameter,chemistry,,DU/K,none,Climate sensitivity of tropospheric ozone to surface warming,,,
+chi_o3s_eesc,parameter,chemistry,,DU/ppt,none,Stratospheric ozone sensitivity to EESC anomaly,,,
+gamma_o3s,parameter,chemistry,,DU/K,none,Climate sensitivity of stratospheric ozone to surface warming,,,
+chi_o3s_n2o,parameter,chemistry,,DU/ppb,none,Stratospheric ozone sensitivity to lagged N2O anomaly,Daniel et al. (2010),,
+eesc_x,parameter,chemistry,,ppt,none,EESC level at which the N2O effect on stratospheric ozone vanishes (inf = linear),Daniel et al. (2010),,
+alpha_br,parameter,chemistry,,1,none,Relative ozone-destruction efficiency of bromine versus chlorine in EESC,Daniel et al. (2007),,
+d_o3t_1850,parameter,chemistry,,DU,none,Tropospheric ozone anomaly at the first step (1850),,,
+d_o3s_1850,parameter,chemistry,,DU,none,Stratospheric ozone anomaly at the first step (1850),,,
+d_so4_1850,parameter,chemistry,,Mt SO4,none,Sulfate aerosol burden anomaly at the first step (1850),,,
+d_poa_1850,parameter,chemistry,,Mt OM,none,"Primary organic aerosol burden anomaly at the first step (1850), before scale_pom",,,
+d_bc_1850,parameter,chemistry,,Mt BC,none,Black carbon burden anomaly at the first step (1850),,,
+d_no3_1850,parameter,chemistry,,Mt NO3,none,Nitrate aerosol burden anomaly at the first step (1850),,,
+d_soa_1850,parameter,chemistry,,Mt,none,Secondary organic aerosol burden anomaly at the first step (1850),,,
+alpha_so4,parameter,chemistry,,1,none,Conversion of sulfur mass to sulfate mass (96/32),,,
+alpha_no3,parameter,chemistry,,1,none,Conversion of nitrogen mass to nitrate mass (62/14),,,
+alpha_pom,parameter,chemistry,,1,none,Conversion of organic carbon mass to organic matter mass,,,
+scale_pom,parameter,chemistry,,1,none,Scaling of the POA burden to match AR5 forcing (0.09/0.292),IPCC AR5 WG1 table 8.4,,
+scale_bc,parameter,chemistry,,1,none,Scaling factor of the black carbon burden,Samset et al.,,
+tau_so2,parameter,chemistry,,yr,none,Effective lifetime of sulfate burden per SO2 emission (burden = alpha_so4 * tau * emission rate),,,
+tau_dms,parameter,chemistry,,yr,none,Effective lifetime of sulfate burden per DMS emission (term switched off),,,
+gamma_so4,parameter,chemistry,,Mt SO4/K,none,Climate sensitivity of the sulfate burden to surface warming,,,
+tau_om_ff,parameter,chemistry,,yr,none,Effective lifetime of organic aerosol burden per fossil OC emission,,,
+tau_om_bb,parameter,chemistry,,yr,none,Effective lifetime of organic aerosol burden per biomass-burning OC emission,,,
+gamma_poa,parameter,chemistry,,Mt OM/K,none,Climate sensitivity of the primary organic aerosol burden to surface warming,,,
+tau_bc_ff,parameter,chemistry,,yr,none,Effective lifetime of black carbon burden per fossil BC emission,,,
+tau_bc_bb,parameter,chemistry,,yr,none,Effective lifetime of black carbon burden per biomass-burning BC emission,,,
+gamma_bc,parameter,chemistry,,Mt BC/K,none,Climate sensitivity of the black carbon burden to surface warming,,,
+tau_nox,parameter,chemistry,,yr,none,Effective lifetime of nitrate burden per NOx emission (as N),,,
+tau_nh3,parameter,chemistry,,yr,none,Effective lifetime of nitrate burden per NH3 emission (as N),,,
+gamma_no3,parameter,chemistry,,Mt NO3/K,none,Climate sensitivity of the nitrate burden to surface warming,,,
+tau_voc,parameter,chemistry,,yr,none,Effective lifetime of secondary organic aerosol burden per anthropogenic VOC emission,,,
+tau_bvoc,parameter,chemistry,,yr,none,Effective lifetime of SOA burden per biogenic VOC emission (term switched off),,,
+gamma_soa,parameter,chemistry,,Mt/K,none,Climate sensitivity of the secondary organic aerosol burden to surface warming,,,
+tau_dust,parameter,chemistry,,yr,none,Effective lifetime of mineral dust burden per dust emission (dust switched off),,,
+gamma_dust,parameter,chemistry,,Mt/K,none,Climate sensitivity of the mineral dust burden (dust switched off),,,
+tau_salt,parameter,chemistry,,yr,none,Effective lifetime of sea-salt burden per sea-salt emission (sea salt switched off),,,
+gamma_salt,parameter,chemistry,,Mt/K,none,Climate sensitivity of the sea-salt burden (sea salt switched off),,,
+solub_so4,parameter,chemistry,,1,none,Solubility (hydrophilic fraction) of sulfate for the aerosol-cloud interaction,Hansen et al. (2005) / Lamarque et al. (2011),,
+solub_poa,parameter,chemistry,,1,none,Solubility (hydrophilic fraction) of primary organic aerosol for the aerosol-cloud interaction,Hansen et al. (2005) / Lamarque et al. (2011),,
+solub_bc,parameter,chemistry,,1,none,Solubility (hydrophilic fraction) of black carbon for the aerosol-cloud interaction,Hansen et al. (2005) / Lamarque et al. (2011),,
+solub_no3,parameter,chemistry,,1,none,Solubility (hydrophilic fraction) of nitrate for the aerosol-cloud interaction,Hansen et al. (2005) / Lamarque et al. (2011),,
+solub_soa,parameter,chemistry,,1,none,Solubility (hydrophilic fraction) of secondary organic aerosol for the aerosol-cloud interaction,Hansen et al. (2005) / Lamarque et al. (2011),,
+solub_dust,parameter,chemistry,,1,none,Solubility (hydrophilic fraction) of mineral dust for the aerosol-cloud interaction,Hansen et al. (2005) / Lamarque et al. (2011),,
+solub_salt,parameter,chemistry,,1,none,Solubility (hydrophilic fraction) of sea salt for the aerosol-cloud interaction,Hansen et al. (2005) / Lamarque et al. (2011),,
+d_ebb_ch4,parameter,chemistry,,MtC/step,per_step,"Additional CH4 biomass-burning emission (as C) per step, added to the input emissions (set to 0: inputs already include it)",OSCAR v2.2 (commented defaults),,
+d_ebb_n2o,parameter,chemistry,,Mt N/step,per_step,"Additional N2O biomass-burning emission (as N) per step, added to the input emissions (set to 0: inputs already include it)",OSCAR v2.2 (commented defaults),,
+d_ebb_nh3,parameter,chemistry,,Mt N/step,per_step,"Additional NH3 biomass-burning emission (as N) per step, added to the input emissions (set to 0: inputs already include it)",OSCAR v2.2 (commented defaults),,
+d_e_wet,parameter,chemistry,,MtC/step,per_step,Additional wetland CH4 emission (as C) per step (set to 0),OSCAR v2.2 (commented defaults),,
+d_ebb_co,parameter,chemistry,,MtC/step,per_step,"Additional CO biomass-burning emission (as C) per step, added to the input emissions (set to 0: inputs already include it)",OSCAR v2.2 (commented defaults),,
+d_ebb_so2,parameter,chemistry,,Mt S/step,per_step,"Additional SO2 biomass-burning emission (as S) per step, added to the input emissions (set to 0: inputs already include it)",OSCAR v2.2 (commented defaults),,
+d_ebb_oc,parameter,chemistry,,Mt OC/step,per_step,"Additional OC biomass-burning emission per step, added to the input emissions (set to 0: inputs already include it)",OSCAR v2.2 (commented defaults),,
+d_ebb_bc,parameter,chemistry,,Mt BC/step,per_step,"Additional BC biomass-burning emission per step, added to the input emissions (set to 0: inputs already include it)",OSCAR v2.2 (commented defaults),,
+d_ebb_nox,parameter,chemistry,,Mt N/step,per_step,"Additional NOx biomass-burning emission (as N) per step, added to the input emissions (set to 0: inputs already include it)",OSCAR v2.2 (commented defaults),,
+d_ebb_voc,parameter,chemistry,,Mt VOC/step,per_step,"Additional VOC biomass-burning emission per step, added to the input emissions (set to 0: inputs already include it)",OSCAR v2.2 (commented defaults),,
+alpha_halo,parameter,chemistry,halo(48),kt/ppt,none,Conversion of halogenated gas mixing ratio to atmospheric mass (molar mass x 0.1765),,,
+tau_halo_oh,parameter,chemistry,halo(48),yr,none,Halogenated gas lifetime against tropospheric OH (inf if none),WMO (2022) Table A-5,,
+tau_halo_hv,parameter,chemistry,halo(48),yr,none,Halogenated gas stratospheric lifetime (x1.06; inf if none),WMO (2022) Table A-5; Prather et al. (2015),,
+tau_halo_other,parameter,chemistry,halo(48),yr,none,"Halogenated gas lifetime against other sinks (ocean, soil; inf if none)",,,
+tau_halo_total,parameter,chemistry,halo(48),yr,none,Total atmospheric lifetime of each halogenated gas (not used by the equations),WMO (2022) Table A-5,,
+halo_0,parameter,chemistry,halo(48),ppt,none,Pre-industrial concentration of each halogenated gas; anomalies are relative to it,RCMIP3 values,,
+f_fracrel,parameter,chemistry,halo(48),1,none,Fractional release factor of each ozone-depleting substance for EESC,"0 outside halo_ods; Engel et al. (2017), WMO (2022) (default)",,
+n_cl,parameter,chemistry,halo(48),1,none,Number of chlorine atoms per molecule,,,
+n_br,parameter,chemistry,halo(48),1,none,Number of bromine atoms per molecule,,,
+gwp100,parameter,chemistry,halo(48),1,none,"100-year global warming potential of each halogenated gas (mass basis, CO2 = 1)",def_gwp100_oa2022_ems; WMO (2022) Table A-5,,
+eesc_0,parameter,chemistry,,ppt,none,Pre-industrial EESC from pre-industrial halogen concentrations,,,
+dt,parameter,chemistry,,yr,none,Model time step (1/6 yr),,,
+land_sea_hx_slope,parameter,doeclim,,1,none,Slope of the linear relationship between climate feedback and land-sea heat exchange,Kriegler (2005); Tanaka and Kriegler (2007),,
+land_sea_hx_offset,parameter,doeclim,,W/m2/K,none,Offset of the linear relationship between climate feedback and land-sea heat exchange,Kriegler (2005); Tanaka and Kriegler (2007),,
+heatcap_seawater,parameter,doeclim,,W yr/m3/K,none,Volumetric heat capacity of seawater (per m3),Kriegler (2005); Tanaka and Kriegler (2007),,
+area_earth,parameter,doeclim,,m2,none,Surface area of the Earth,Kriegler (2005); Tanaka and Kriegler (2007),,
+diffusivity_unit_conv,parameter,doeclim,,1,none,Conversion factor from cm2/s to m2/yr (3155.8),Kriegler (2005); Tanaka and Kriegler (2007),,
+rf_2xco2,parameter,doeclim,,W/m2,none,Radiative forcing for a doubling of atmospheric CO2,Kriegler (2005); Tanaka and Kriegler (2007),,
+land_sens_ratio,parameter,doeclim,,1,none,Ratio of land to sea-surface climate sensitivity (T_L2x = ratio * T_S2x),Kriegler (2005); Tanaka and Kriegler (2007),,
+secs_per_year,parameter,doeclim,,s/yr,per_year,Seconds per year,Kriegler (2005); Tanaka and Kriegler (2007),,
+depth_bottom,parameter,doeclim,,m,none,Bottom depth of the diffusive ocean,Kriegler (2005); Tanaka and Kriegler (2007),,
+sst_air_factor,parameter,doeclim,,1,none,Warming factor of marine surface air over SST (sea-ice retreat),Kriegler (2005); Tanaka and Kriegler (2007),,
+heatcap_land,parameter,doeclim,,W yr/m2/K,none,Heat capacity of the land-troposphere system,Kriegler (2005); Tanaka and Kriegler (2007),,
+heatcap_mixed,parameter,doeclim,,W yr/m2/K,none,Heat capacity of the ocean mixed layer-troposphere system,Kriegler (2005); Tanaka and Kriegler (2007),,
+frac_land,parameter,doeclim,,1,none,Land fraction of the Earth surface,Kriegler (2005); Tanaka and Kriegler (2007),,
+frac_ocean_deep,parameter,doeclim,,1,none,Fraction of ocean area deeper than 60 m (diffusive interior),Kriegler (2005); Tanaka and Kriegler (2007),,
+climate_sensitivity,parameter,doeclim,,K,none,Equilibrium climate sensitivity to CO2 doubling,Kriegler (2005); Tanaka and Kriegler (2007),,
+diffusivity,parameter,doeclim,,cm2/s,none,Vertical ocean heat diffusivity,Kriegler (2005); Tanaka and Kriegler (2007),,
+tas_0,parameter,doeclim,,K,none,"Initial global surface air temperature anomaly (read from CSV, not used by the equations)",Kriegler (2005); Tanaka and Kriegler (2007),,
+sst_0,parameter,doeclim,,K,none,"Initial sea-surface temperature anomaly (read from CSV, not used by the equations)",Kriegler (2005); Tanaka and Kriegler (2007),,
+nsteps,parameter,doeclim,,1,none,Number of model time steps (length of the diffusion kernel),Kriegler (2005); Tanaka and Kriegler (2007),,
+dt,parameter,doeclim,,yr,none,Model time step (1/6 yr),Kriegler (2005); Tanaka and Kriegler (2007),,
+area_ocean,parameter,doeclim,,m2,none,"Ocean surface area, (1 - frac_land) * area_earth",Kriegler (2005); Tanaka and Kriegler (2007),,
+c_num,parameter,doeclim,,1,none,Factor from sea-surface climate sensitivity to global mean,Kriegler (2005); Tanaka and Kriegler (2007),,
+c_den,parameter,doeclim,,1,none,Intermediate dimensionless factor in the feedback parameters,Kriegler (2005); Tanaka and Kriegler (2007),,
+feedback_land,parameter,doeclim,,W/m2/K,none,Land climate feedback parameter,Kriegler (2005); Tanaka and Kriegler (2007),,
+feedback_sea,parameter,doeclim,,W/m2/K,none,Sea climate feedback parameter,Kriegler (2005); Tanaka and Kriegler (2007),,
+land_sea_hx,parameter,doeclim,,W/m2/K,none,Land-sea heat exchange coefficient,Kriegler (2005); Tanaka and Kriegler (2007),,
+diffusivity_eff,parameter,doeclim,,m2/yr,per_year,Ocean vertical heat diffusivity in m2/yr,Kriegler (2005); Tanaka and Kriegler (2007),,
+tau_bottom,parameter,doeclim,,yr,none,"Ocean bottom diffusion time scale, depth_bottom^2 / diffusivity_eff",Kriegler (2005); Tanaka and Kriegler (2007),,
+power_to_heat,parameter,doeclim,,1e22 J m2/W/yr,per_year,Conversion of an ocean heat flux (W/m2) to a heat rate in 1e22 J/yr: area_ocean * secs_per_year / 1e22,Kriegler (2005); Tanaka and Kriegler (2007),,
+tau_feedback_sea,parameter,doeclim,,yr,none,Sea climate feedback time scale,Kriegler (2005); Tanaka and Kriegler (2007),,
+tau_feedback_land,parameter,doeclim,,yr,none,Land climate feedback time scale,Kriegler (2005); Tanaka and Kriegler (2007),,
+tau_diffusion,parameter,doeclim,,yr,none,Interior ocean heat uptake time scale,Kriegler (2005); Tanaka and Kriegler (2007),,
+tau_hx_sea,parameter,doeclim,,yr,none,Sea-land heat exchange time scale,Kriegler (2005); Tanaka and Kriegler (2007),,
+tau_hx_land,parameter,doeclim,,yr,none,Land-sea heat exchange time scale,Kriegler (2005); Tanaka and Kriegler (2007),,
+ker_t0,parameter,doeclim,t,1,none,"Zeroth-order dimensionless diffusion-kernel term (EK05 A.25 / TK07 2.3.23), third-order bottom correction, evaluated per step index",Kriegler (2005); Tanaka and Kriegler (2007),,
+ker_ta1,parameter,doeclim,t,1,none,"First-order exponential dimensionless diffusion-kernel term (EK05 A.25 / TK07 2.3.23), third-order bottom correction, evaluated per step index",Kriegler (2005); Tanaka and Kriegler (2007),,
+ker_tb1,parameter,doeclim,t,1,none,"First-order erf dimensionless diffusion-kernel term (EK05 A.25 / TK07 2.3.23), third-order bottom correction, evaluated per step index",Kriegler (2005); Tanaka and Kriegler (2007),,
+ker_ta2,parameter,doeclim,t,1,none,"Second-order exponential dimensionless diffusion-kernel term (EK05 A.25 / TK07 2.3.23), third-order bottom correction, evaluated per step index",Kriegler (2005); Tanaka and Kriegler (2007),,
+ker_tb2,parameter,doeclim,t,1,none,"Second-order erf dimensionless diffusion-kernel term (EK05 A.25 / TK07 2.3.23), third-order bottom correction, evaluated per step index",Kriegler (2005); Tanaka and Kriegler (2007),,
+ker_ta3,parameter,doeclim,t,1,none,"Third-order exponential dimensionless diffusion-kernel term (EK05 A.25 / TK07 2.3.23), third-order bottom correction, evaluated per step index",Kriegler (2005); Tanaka and Kriegler (2007),,
+ker_tb3,parameter,doeclim,t,1,none,"Third-order erf dimensionless diffusion-kernel term (EK05 A.25 / TK07 2.3.23), third-order bottom correction, evaluated per step index",Kriegler (2005); Tanaka and Kriegler (2007),,
+ker,parameter,doeclim,t,1,none,Total diffusion kernel (sum of the kernel terms) applied to the SST history,Kriegler (2005); Tanaka and Kriegler (2007),,
+ker_last,parameter,doeclim,,1,none,Diffusion kernel value at the last step (enters matrix A),Kriegler (2005); Tanaka and Kriegler (2007),,
+mat_c,parameter,doeclim,mtx_idx(4),1,none,"Hammer-Hollingsworth correction matrix against oscillations from short-term forcing (TK07 Eq. 2.3.27), 2x2 flattened",Kriegler (2005); Tanaka and Kriegler (2007),,
+mat_b,parameter,doeclim,mtx_idx(4),1,none,"Implicit-side matrix B of B*T(n) = Q(n) + A*T(n-1) + DPAST(n), incl. correction (TK07 Eq. 2.3.24), 2x2 flattened",Kriegler (2005); Tanaka and Kriegler (2007),,
+mat_a,parameter,doeclim,mtx_idx(4),1,none,"Explicit-side matrix A of the Crank-Nicolson temperature system, incl. correction, 2x2 flattened",Kriegler (2005); Tanaka and Kriegler (2007),,
+temp_d,parameter,doeclim,,1,none,Determinant of matrix B,Kriegler (2005); Tanaka and Kriegler (2007),,
+temp,parameter,doeclim,,1,none,Inverse of the determinant of matrix B,Kriegler (2005); Tanaka and Kriegler (2007),,
+mat_b_inv,parameter,doeclim,mtx_idx(4),1,none,"Inverse of matrix B, 2x2 flattened",Kriegler (2005); Tanaka and Kriegler (2007),,
+ch4rfc,parameter,forcing,,1,none,"Choice of CO2/CH4/N2O forcing formulas: ""etminan"" (Etminan et al. 2016, default) or ""myhre"" (Myhre et al. 2013); a switch, not a number",Etminan et al. (2016); Myhre et al. (2013),,
+co2_log,parameter,forcing,,1,none,Flag: CO2 forcing uses the simple log form 5.35*ln(1 + dCO2/CO2_init) (Myhre branch or listed scenario names) instead of the Etminan formula,Myhre et al. (1998),,
+lcc_zero,parameter,forcing,,1,none,"Flag: land-cover albedo forcing set to zero (natural-forcing group ""zero"")",,,
+co2_init,parameter,forcing,,ppm,none,"Reference CO2 concentration at which CO2 forcing is zero (279 ppm, pre-industrial)",,,
+co2_0,parameter,forcing,,ppm,none,Baseline CO2 concentration to which the CO2 anomaly is added (284 ppm),,,
+ch4_init,parameter,forcing,,ppb,none,Reference CH4 concentration at which CH4 forcing is zero (pre-industrial),Etminan et al. (2016),,
+ch4_0,parameter,forcing,,ppb,none,Baseline CH4 concentration to which the CH4 anomaly is added,,,
+n2o_init,parameter,forcing,,ppb,none,Reference N2O concentration at which N2O forcing is zero (pre-industrial),,,
+n2o_0,parameter,forcing,,ppb,none,Baseline N2O concentration to which the N2O anomaly is added,,,
+rf_2xco2,parameter,forcing,,W/m2,none,Target radiative forcing for a doubling of CO2 (3.71 W/m2) used to rescale the Etminan CO2 formula,,,
+rf_2xco2_etminan,parameter,forcing,,W/m2,none,Forcing for a CO2 doubling implied by the Etminan formula at the reference concentrations,Etminan et al. (2016),,
+scale_rf_co2,parameter,forcing,,1,none,Scaling factor applied to Etminan CO2 forcing so that a doubling gives rf_2xco2 (rf_2xco2 / rf_2xco2_etminan),,,
+radeff_halo,parameter,forcing,halo(48),W/m2/ppt,none,Radiative efficiency of each halogenated gas,IPCC AR5 (Myhre et al. 2013) Table 8.A.1,,
+radeff_o3t,parameter,forcing,,W/m2/DU,none,Radiative efficiency of tropospheric ozone,Stevenson et al. (2013); IPCC AR5,,
+radeff_o3s,parameter,forcing,,W/m2/DU,none,Radiative efficiency of stratospheric ozone,Forster et al. (2007); Gauss et al. (2006),,
+radeff_so4,parameter,forcing,,W/m2/Tg,none,Direct radiative efficiency of sulfate aerosol burden,"Myhre et al. (2013, AeroCom2)",,
+radeff_poa,parameter,forcing,,W/m2/Tg,none,Direct radiative efficiency of primary organic aerosol burden,"Myhre et al. (2013, AeroCom2)",,
+radeff_bc,parameter,forcing,,W/m2/Tg,none,Direct radiative efficiency of black carbon aerosol burden,"Myhre et al. (2013, AeroCom2)",,
+radeff_no3,parameter,forcing,,W/m2/Tg,none,Direct radiative efficiency of nitrate aerosol burden,"Myhre et al. (2013, AeroCom2)",,
+radeff_soa,parameter,forcing,,W/m2/Tg,none,Direct radiative efficiency of secondary organic aerosol burden,"Myhre et al. (2013, AeroCom2)",,
+radeff_dust,parameter,forcing,,W/m2/Tg,none,Direct radiative efficiency of mineral dust burden (set to 0; dust forcing is prescribed),,,
+radeff_salt,parameter,forcing,,W/m2/Tg,none,Direct radiative efficiency of sea-salt burden (set to 0),,,
+k_bc_adjust,parameter,forcing,,1,none,"Semi-direct (cloud) adjustment of black carbon, as a fraction of BC direct forcing",Boucher et al. (2013); Lohmann et al. (2010),,
+cloud_scale,parameter,forcing,,1,none,Tuning scale factor applied to aerosol-cloud forcing (4.7*1.05),,,
+aerh_scale,parameter,forcing,,1,none,Scale factor (1/4) on the logarithmic soluble-aerosol term of aerosol-cloud forcing,,,
+rf_ref1,parameter,forcing,,W/m2,none,"Reference aerosol-cloud ERF over 1850-2000 for the chosen model, rescaled to the AR5 best guess",Shindell et al. (2013); Boucher et al. (2013),,
+aer_ref0,parameter,forcing,,Tg,none,Reference soluble (hydrophilic) aerosol burden in 1850 for the aerosol-cloud fit,Shindell et al. (2013),,
+aer_ref1,parameter,forcing,,Tg,none,Reference soluble (hydrophilic) aerosol burden in 2000 for the aerosol-cloud fit,Shindell et al. (2013),,
+phi_0,parameter,forcing,,W/m2,none,Intensity of the aerosol indirect effect in the logarithmic formulation,Gultepe and Isaac (1999),,
+aerh_0,parameter,forcing,,Tg,none,Pre-industrial burden of soluble aerosols used in the aerosol-cloud forcing,Carslaw et al. (2013),,
+warmeff_volc,parameter,forcing,,1,none,Warming efficacy of volcanic forcing (0.6),Gregory et al. (2016),,
+radeff_bc_snow,parameter,forcing,,W yr/m2/Mt BC,none,"Global normalized radiative effect of black carbon deposited on snow, per unit annual BC emission",Lee et al. (2013); Boucher et al. (2013),,
+warmeff_bc_snow,parameter,forcing,,1,none,Warming efficacy of black carbon on snow forcing,"Boucher et al. (2013), sect. 7.5.2.3",,
+alpha_lcc,parameter,forcing,land_type(5),1e-4 W/m2/km2,none,Global land-cover albedo forcing coefficients per unit area change of each land type (computed but not used by the equations),,,
+alpha_lcc_reg,parameter,forcing,"region(11),land_type(5)",1e-4 W/m2/km2,none,"Regional land-cover albedo forcing coefficients per unit area change, by region and land type",,,
+warmeff_lcc,parameter,forcing,,1,none,Warming efficacy of land-cover-change albedo forcing,Bright et al. (2015),,
+p_atm_co2,parameter,forcing,,1,none,Atmospheric absorption factor of CO2 forcing for the precipitation response,Andrews et al. (2010); Kvalevag et al. (2013); Allan et al. (2014),,
+p_atm_no_co2,parameter,forcing,,1,none,Atmospheric absorption factor of non-CO2 well-mixed GHG forcing for the precipitation response,Andrews et al. (2010); Kvalevag et al. (2013),,
+p_atm_o3t,parameter,forcing,,1,none,Atmospheric absorption factor of tropospheric ozone forcing for the precipitation response,Andrews et al. (2010),,
+p_atm_strat,parameter,forcing,,1,none,Atmospheric absorption factor of stratospheric ozone and water vapour forcing (assumed 0),Allan et al. (2014),,
+p_atm_scatter,parameter,forcing,,1,none,Atmospheric absorption factor of scattering aerosol and volcanic forcing for the precipitation response,Andrews et al. (2010); Kvalevag et al. (2013),,
+p_atm_absorb,parameter,forcing,,1,none,Atmospheric absorption factor of absorbing aerosol (black carbon) forcing for the precipitation response,Andrews et al. (2010); Kvalevag et al. (2013),,
+p_atm_cloud,parameter,forcing,,1,none,Atmospheric absorption factor of aerosol-cloud and contrail forcing (assumed 0),,,
+p_atm_alb,parameter,forcing,,1,none,"Atmospheric absorption factor of surface albedo forcing (BC on snow, land cover)",,,
+p_atm_solar,parameter,forcing,,1,none,Atmospheric absorption factor of solar forcing for the precipitation response,Andrews et al. (2010); Kvalevag et al. (2013),,
+efficacy,parameter,forcing,efficacy(21),1,none,"Forcing efficacies (ERF/RF ratios) by forcing agent (CO2, CH4, N2O, ozone, aerosols, cloud albedo, solar, halogens, contrails, ...)",MAGICC6 (Meinshausen et al. 2011),,
+dt,parameter,forcing,,yr,none,Model time step length (1/6 yr),,,
+npp_0_per_step,parameter,land,,GtC/step,per_step,"Initial (preindustrial, 1850) net primary production per model step",,,
+resp_0_per_step,parameter,land,,GtC/step,per_step,"Initial (1850) plant respiration per model step, removed from the plant pool",,,
+fert_scale,parameter,land,,1,none,Divisor applied to the CO2 fertilisation factor,,,
+beta,parameter,land,,1,none,CO2 fertilisation factor (beta) of the logarithmic fertilisation form,,,
+fert_method,parameter,land,,1,none,"Fertilisation form blend: 1 = logarithmic, 2 = sigmoidal (rectangular hyperbolic), in between = linear blend",,,
+k_npp,parameter,land,,1/K,none,Temperature feedback factor of NPP: multiplier exp(k*dT) with dT the extrapolated temperature anomaly,,,
+k_resp,parameter,land,,1/K,none,Temperature feedback factor of plant respiration: multiplier exp(k*dT) with dT the extrapolated temperature anomaly,,,
+k_detr,parameter,land,,1/K,none,Temperature feedback factor of detritus decay: multiplier exp(k*dT) with dT the extrapolated temperature anomaly,,,
+k_soil,parameter,land,,1/K,none,Temperature feedback factor of soil decay: multiplier exp(k*dT) with dT the extrapolated temperature anomaly,,,
+pool_0_p,parameter,land,,GtC,none,Initial (1850) plant carbon pool,,,
+pool_0_h,parameter,land,,GtC,none,Initial (1850) detritus carbon pool,,,
+pool_0_s,parameter,land,,GtC,none,Initial (1850) soil carbon pool,,,
+gifford_conc,parameter,land,,ppm,none,Gifford CO2 concentration of zero NPP for the sigmoidal fertilisation form; loaded but unused (equations use the constant co2_npp_zero),,,
+no_regrowth_frac,parameter,land,,1,none,"Fraction of gross deforestation that does not regrow [0,1]; reduces pool turnover times via cumulative land-use emissions",,,
+f_npp_to_p,parameter,land,,1,none,Fraction of NPP allocated to the plant pool,,,
+f_npp_to_h,parameter,land,,1,none,Fraction of NPP allocated to the detritus pool,,,
+f_p_to_h,parameter,land,,1,none,Fraction of plant decay transferred to the detritus pool,,,
+f_defo_p,parameter,land,,1,none,Fraction of net land-use CO2 emissions taken from the plant pool,,,
+f_defo_h,parameter,land,,1,none,Fraction of net land-use CO2 emissions taken from the detritus pool,,,
+f_h_to_s,parameter,land,,1,none,Fraction of detritus decay transferred to the soil pool (rest is respired),,,
+regrow_inter_p,parameter,land,,GtC/step,per_step,Intercept of the linear plant regrowth function regrow = inter + gradi*tau (per step),,,
+regrow_gradi_p,parameter,land,,GtC/step2,per_step,Gradient of the plant regrowth function with respect to the turnover time (tau in steps),,,
+regrow_inter_h,parameter,land,,GtC/step,per_step,Intercept of the linear detritus regrowth function regrow = inter + gradi*tau (per step),,,
+regrow_gradi_h,parameter,land,,GtC/step2,per_step,Gradient of the detritus regrowth function with respect to the turnover time (tau in steps),,,
+regrow_inter_s,parameter,land,,GtC/step,per_step,Intercept of the linear soil regrowth function regrow = inter + gradi*tau (per step),,,
+regrow_gradi_s,parameter,land,,GtC/step2,per_step,Gradient of the soil regrowth function with respect to the turnover time (tau in steps),,,
+f_npp_to_s,parameter,land,,1,none,Fraction of NPP allocated to the soil pool (1 - plant - detritus fractions),,,
+f_p_to_s,parameter,land,,1,none,Fraction of plant decay transferred to the soil pool (1 - f_p_to_h),,,
+f_defo_s,parameter,land,,1,none,Fraction of net land-use CO2 emissions taken from the soil pool (1 - plant - detritus fractions),,,
+decay_0_p,parameter,land,,GtC/step,per_step,"Initial (1850) plant decay flux, derived from the steady-state pool balance",,,
+decay_0_h,parameter,land,,GtC/step,per_step,"Initial (1850) detritus decay flux, derived from the steady-state pool balance",,,
+decay_0_s,parameter,land,,GtC/step,per_step,"Initial (1850) soil decay flux, derived from the steady-state pool balance",,,
+fert_sigmoid_only,parameter,land,,1,none,Switch (boolean): use the sigmoidal fertilisation form only (abrupt-0p5xCO2 runs),,,
+co2_ref,parameter,land,,ppm,none,Reference (1850) CO2 concentration of the fertilisation functions (284 ppm),,,
+co2_npp_zero,parameter,land,,ppm,none,CO2 concentration at which NPP is zero in the sigmoidal fertilisation form (31 ppm),,,
+alpha_mld,parameter,ocean_oscar,,1,none,Amplitude of the relative mixed-layer depth response to SST change,Joos et al. (1996),,
+gamma_mld,parameter,ocean_oscar,,1/K,none,Exponential sensitivity of mixed-layer depth to SST anomaly,Joos et al. (1996),,
+gas_exchange_rate,parameter,ocean_oscar,,1/yr,per_year,Air-sea gas-exchange coefficient,Joos et al. (1996),,
+area_ocean,parameter,ocean_oscar,,m2,none,Ocean surface area,Joos et al. (1996),,
+mld_0,parameter,ocean_oscar,,m,none,Pre-industrial mixed-layer depth,Joos et al. (1996),,
+sst_0,parameter,ocean_oscar,,degC,none,Pre-industrial sea-surface temperature,Joos et al. (1996),,
+p_circ,parameter,ocean_oscar,box(8),1,none,Fractions of the surface-ocean boxes of the pulse-response (box model) representation,Joos et al. (1996),,
+tau_circ,parameter,ocean_oscar,box(8),yr,none,Export time scales of the surface-ocean boxes (inf = no export),Joos et al. (1996),,
+w_poly,parameter,ocean_oscar,,1,none,Normalised weight of the polynomial (Joos 2001) pCO2 emulator,Joos et al. (1996),,
+w_pade,parameter,ocean_oscar,,1,none,Normalised weight of the CO2Sys Pade pCO2 emulator,Joos et al. (1996),,
+w_power,parameter,ocean_oscar,,1,none,Normalised weight of the CO2Sys power-law pCO2 emulator,Joos et al. (1996),,
+n_substeps,parameter,ocean_oscar,,1,none,Number of explicit Euler sub-steps per model step,Joos et al. (1996),,
+alpha_co2,parameter,ocean_oscar,,GtC/ppm,none,Conversion from atmospheric CO2 mixing ratio to carbon mass used in the ocean module (0.1765*12),Joos et al. (1996),,
+alpha_sol,parameter,ocean_oscar,,umol m3/kg/ppm,none,CO2 solubility/conversion factor from carbon to DIC (Joos et al. 1996),Joos et al. (1996),,
+co2_0,parameter,ocean_oscar,,ppm,none,Pre-industrial atmospheric CO2 concentration,Joos et al. (1996),,
+f_temp,parameter,ocean_oscar,,1,none,Multiplier applied to the SST anomaly in the ocean module,Joos et al. (1996),,
+dt,parameter,ocean_oscar,,yr,none,Model time step (1/6 yr),Joos et al. (1996),,
+circ_thermohaline,parameter,ocean_hector,,m3/s,none,"Thermohaline circulation volume transport (low-latitude to high-latitude surface, sinking to deep)",Hartin et al. (2015),,
+circ_hl_overturning,parameter,ocean_hector,,m3/s,none,High-latitude overturning volume transport,Hartin et al. (2015),,
+exch_warm_inter,parameter,ocean_hector,,m3/s,none,Two-way water exchange between the warm low-latitude surface box and the intermediate box,Hartin et al. (2015),,
+exch_inter_deep,parameter,ocean_hector,,m3/s,none,Two-way water exchange between the intermediate and deep boxes,Hartin et al. (2015),,
+exch_cold_deep,parameter,ocean_hector,,m3/s,none,Two-way water exchange between the high-latitude surface box and the deep box (0 by default),Hartin et al. (2015),,
+exch_warm_cold,parameter,ocean_hector,,m3/s,none,Two-way water exchange between the low- and high-latitude surface boxes (0 by default),Hartin et al. (2015),,
+exch_cold_inter,parameter,ocean_hector,,m3/s,none,Two-way water exchange between the high-latitude surface box and the intermediate box (0 by default),Hartin et al. (2015),,
+dt,parameter,ocean_hector,,yr,none,Model time step length (1/6 yr),Hartin et al. (2015),,
+secs_per_step,parameter,ocean_hector,,s/step,per_step,Seconds in one model step (365.25 days x 1/6),Hartin et al. (2015),,
+thick_ll,parameter,ocean_hector,,m,none,Thickness of the low-latitude surface box (100 m),Hartin et al. (2015),,
+thick_hl,parameter,ocean_hector,,m,none,Thickness of the high-latitude surface box (100 m),Hartin et al. (2015),,
+thick_inter,parameter,ocean_hector,,m,none,Thickness of the intermediate box (1000 m minus surface thickness = 900 m),Hartin et al. (2015),,
+thick_deep,parameter,ocean_hector,,m,none,Thickness of the deep box (3777 m minus 1000 m = 2777 m),Hartin et al. (2015),,
+area,parameter,ocean_hector,,m2,none,Total ocean area used for box volumes and surface areas (3.6e14 m2),Hartin et al. (2015),,
+part_high,parameter,ocean_hector,,1,none,Fraction of ocean area in the high-latitude surface box (0.15),Hartin et al. (2015),,
+part_low,parameter,ocean_hector,,1,none,Fraction of ocean area in the low-latitude surface box (1 - part_high),Hartin et al. (2015),,
+volume_ll,parameter,ocean_hector,,m3,none,Volume of the low-latitude surface box (area x part_low x thick_ll),Hartin et al. (2015),,
+volume_hl,parameter,ocean_hector,,m3,none,Volume of the high-latitude surface box (area x part_high x thick_hl),Hartin et al. (2015),,
+volume_io,parameter,ocean_hector,,m3,none,Volume of the intermediate box (area x thick_inter),Hartin et al. (2015),,
+volume_do,parameter,ocean_hector,,m3,none,Volume of the deep box (area x thick_deep),Hartin et al. (2015),,
+transport_k,parameter,ocean_hector,"box(4),box(4)",1/step,per_step,"Advective carbon transport rate from box (row) to box (column), fraction of donor-box carbon per step",Hartin et al. (2015),,
+exchange_k,parameter,ocean_hector,"box(4),box(4)",1/step,per_step,"Two-way exchange carbon transfer rate from box (row) to box (column), fraction of donor-box carbon per step",Hartin et al. (2015),,
+delta_t,parameter,ocean_hector,box(4),K,none,"Temperature offset of each box from the 15 degC mean global temperature (LL +7, HL -13, IO/DO 0)",Hartin et al. (2015),,
+salinity,parameter,ocean_hector,box(4),1,none,"Seawater salinity of each box (practical salinity, default 34.5)",Hartin et al. (2015),,
+volume,parameter,ocean_hector,box(4),m3,none,Volume of each box,Hartin et al. (2015),,
+area_surface,parameter,ocean_hector,box(4),m2,none,Air-sea exchange surface area of each box (0 for intermediate and deep),Hartin et al. (2015),,
+wind_speed,parameter,ocean_hector,box(4),m/s,none,Average wind speed over each surface box (6.7 m/s; 0 for interior boxes),Hartin et al. (2015),,
+alk,parameter,ocean_hector,box(4),umol/kg,none,Total alkalinity of each box (mol/kg x 1e6); interior boxes take the LL/HL mean,Hartin et al. (2015),,
+carbon_initial,parameter,ocean_hector,box(4),PgC,none,Initial carbon content of each box at the first step,Hartin et al. (2015),,
+cpool_scale,parameter,ocean_hector,chem_box(2),1,none,Scaling factor applied to surface-box ocean pCO2 in the air-sea flux (1 = none),Hartin et al. (2015),,
+warming_factor,parameter,ocean_hector,box(4),1,none,Multiplier of the global surface temperature anomaly giving each box's warming,Hartin et al. (2015),,
+atmoLndFlux_accum_1850,report,report,t,Mt CO2,state,"Cumulative atmosphere-to-land carbon flux since 1850, as CO2 mass",,319,parameter
+atmoSeaFlux_accum_1850,report,report,t,Mt CO2,state,"Cumulative atmosphere-to-ocean carbon flux since 1850, as CO2 mass",,318,parameter
+chm_CCFC,output,chemistry,t,ppm,state,"GWP100-weighted total concentration of CFCs (sum of (halo_0 + anomaly) x GWP100, converted ppt to ppm), CO2-equivalent-like index",,181,variable
+chm_CFGS,output,chemistry,t,ppm,state,"GWP100-weighted total concentration of fluorinated gases (HFC, PFC, SF6, NF3, SO2F2) (sum of (halo_0 + anomaly) x GWP100, converted ppt to ppm), CO2-equivalent-like index",,182,variable
+chm_CHALO,output,chemistry,t,ppm,state,"GWP100-weighted total concentration of all 48 halogenated gases (sum of (halo_0 + anomaly) x GWP100, converted ppt to ppm), CO2-equivalent-like index",,184,variable
+chm_CHFC,output,chemistry,t,ppm,state,"GWP100-weighted total concentration of HFCs (sum of (halo_0 + anomaly) x GWP100, converted ppt to ppm), CO2-equivalent-like index",,178,variable
+chm_CMNT,output,chemistry,t,ppm,state,"GWP100-weighted total concentration of Montreal-Protocol gases (sum of (halo_0 + anomaly) x GWP100, converted ppt to ppm), CO2-equivalent-like index",,183,variable
+chm_CODS,output,chemistry,t,ppm,state,"GWP100-weighted total concentration of ozone-depleting substances (sum of (halo_0 + anomaly) x GWP100, converted ppt to ppm), CO2-equivalent-like index",,180,variable
+chm_CPFC,output,chemistry,t,ppm,state,"GWP100-weighted total concentration of PFCs (sum of (halo_0 + anomaly) x GWP100, converted ppt to ppm), CO2-equivalent-like index",,179,variable
+chm_D_AERh,output,chemistry,t,Mt,state,"Solubility-weighted (hydrophilic) aerosol burden anomaly, driving aerosol-cloud interactions",,202,variable
+chm_D_BC,output,chemistry,t,Mt BC,state,Black carbon burden anomaly relative to 1850 emissions,,197,variable
+chm_D_CH4,output,chemistry,t,ppb,state,CH4 concentration anomaly relative to ch4_0,,176,variable
+chm_D_CH4_lag,output,chemistry,t,ppb,state,"Lagged CH4 concentration anomaly (relaxation with tau_lag), used for the stratospheric sink",,,
+chm_D_DUST,output,chemistry,t,Mt,state,"Mineral dust burden anomaly (switched off, always 0)",,200,variable
+chm_D_EESC,output,chemistry,t,ppt,state,Equivalent effective stratospheric chlorine anomaly from lagged ODS concentrations,,193,variable
+chm_D_HALO,output,chemistry,"t,halo(48)",ppt,state,Concentration anomaly of each halogenated gas relative to halo_0,,,
+chm_D_HALO_c2f6,report,chemistry,t,ppt,state,c2f6 concentration anomaly relative to its pre-industrial value (halo_0),,221,parameter
+chm_D_HALO_c3f8,report,chemistry,t,ppt,state,c3f8 concentration anomaly relative to its pre-industrial value (halo_0),,222,parameter
+chm_D_HALO_c4f10,report,chemistry,t,ppt,state,c4f10 concentration anomaly relative to its pre-industrial value (halo_0),,224,parameter
+chm_D_HALO_c5f12,report,chemistry,t,ppt,state,c5f12 concentration anomaly relative to its pre-industrial value (halo_0),,225,parameter
+chm_D_HALO_c6f14,report,chemistry,t,ppt,state,c6f14 concentration anomaly relative to its pre-industrial value (halo_0),,226,parameter
+chm_D_HALO_c7f16,report,chemistry,t,ppt,state,c7f16 concentration anomaly relative to its pre-industrial value (halo_0),,227,parameter
+chm_D_HALO_c8f18,report,chemistry,t,ppt,state,c8f18 concentration anomaly relative to its pre-industrial value (halo_0),,228,parameter
+chm_D_HALO_cc4f8,report,chemistry,t,ppt,state,cc4f8 concentration anomaly relative to its pre-industrial value (halo_0),,223,parameter
+chm_D_HALO_ccl4,report,chemistry,t,ppt,state,ccl4 concentration anomaly relative to its pre-industrial value (halo_0),,235,parameter
+chm_D_HALO_cf4,report,chemistry,t,ppt,state,cf4 concentration anomaly relative to its pre-industrial value (halo_0),,220,parameter
+chm_D_HALO_cfc11,report,chemistry,t,ppt,state,cfc11 concentration anomaly relative to its pre-industrial value (halo_0),,229,parameter
+chm_D_HALO_cfc113,report,chemistry,t,ppt,state,cfc113 concentration anomaly relative to its pre-industrial value (halo_0),,231,parameter
+chm_D_HALO_cfc114,report,chemistry,t,ppt,state,cfc114 concentration anomaly relative to its pre-industrial value (halo_0),,232,parameter
+chm_D_HALO_cfc115,report,chemistry,t,ppt,state,cfc115 concentration anomaly relative to its pre-industrial value (halo_0),,233,parameter
+chm_D_HALO_cfc12,report,chemistry,t,ppt,state,cfc12 concentration anomaly relative to its pre-industrial value (halo_0),,230,parameter
+chm_D_HALO_cfc13,report,chemistry,t,ppt,state,cfc13 concentration anomaly relative to its pre-industrial value (halo_0),,234,parameter
+chm_D_HALO_ch2cl2,report,chemistry,t,ppt,state,ch2cl2 concentration anomaly relative to its pre-industrial value (halo_0),,249,parameter
+chm_D_HALO_ch3br,report,chemistry,t,ppt,state,ch3br concentration anomaly relative to its pre-industrial value (halo_0),,247,parameter
+chm_D_HALO_ch3ccl3,report,chemistry,t,ppt,state,ch3ccl3 concentration anomaly relative to its pre-industrial value (halo_0),,236,parameter
+chm_D_HALO_ch3cl,report,chemistry,t,ppt,state,ch3cl concentration anomaly relative to its pre-industrial value (halo_0),,248,parameter
+chm_D_HALO_chcl3,report,chemistry,t,ppt,state,chcl3 concentration anomaly relative to its pre-industrial value (halo_0),,250,parameter
+chm_D_HALO_halon1202,report,chemistry,t,ppt,state,halon1202 concentration anomaly relative to its pre-industrial value (halo_0),,244,parameter
+chm_D_HALO_halon1211,report,chemistry,t,ppt,state,halon1211 concentration anomaly relative to its pre-industrial value (halo_0),,243,parameter
+chm_D_HALO_halon1301,report,chemistry,t,ppt,state,halon1301 concentration anomaly relative to its pre-industrial value (halo_0),,245,parameter
+chm_D_HALO_halon2402,report,chemistry,t,ppt,state,halon2402 concentration anomaly relative to its pre-industrial value (halo_0),,246,parameter
+chm_D_HALO_hcfc124,report,chemistry,t,ppt,state,hcfc124 concentration anomaly relative to its pre-industrial value (halo_0),,238,parameter
+chm_D_HALO_hcfc132b,report,chemistry,t,ppt,state,hcfc132b concentration anomaly relative to its pre-industrial value (halo_0),,239,parameter
+chm_D_HALO_hcfc133a,report,chemistry,t,ppt,state,hcfc133a concentration anomaly relative to its pre-industrial value (halo_0),,240,parameter
+chm_D_HALO_hcfc141b,report,chemistry,t,ppt,state,hcfc141b concentration anomaly relative to its pre-industrial value (halo_0),,241,parameter
+chm_D_HALO_hcfc142b,report,chemistry,t,ppt,state,hcfc142b concentration anomaly relative to its pre-industrial value (halo_0),,242,parameter
+chm_D_HALO_hcfc22,report,chemistry,t,ppt,state,hcfc22 concentration anomaly relative to its pre-industrial value (halo_0),,237,parameter
+chm_D_HALO_hfc125,report,chemistry,t,ppt,state,hfc125 concentration anomaly relative to its pre-industrial value (halo_0),,205,parameter
+chm_D_HALO_hfc134,report,chemistry,t,ppt,state,hfc134 concentration anomaly relative to its pre-industrial value (halo_0),,214,parameter
+chm_D_HALO_hfc134a,report,chemistry,t,ppt,state,hfc134a concentration anomaly relative to its pre-industrial value (halo_0),,206,parameter
+chm_D_HALO_hfc143,report,chemistry,t,ppt,state,hfc143 concentration anomaly relative to its pre-industrial value (halo_0),,215,parameter
+chm_D_HALO_hfc143a,report,chemistry,t,ppt,state,hfc143a concentration anomaly relative to its pre-industrial value (halo_0),,207,parameter
+chm_D_HALO_hfc152a,report,chemistry,t,ppt,state,hfc152a concentration anomaly relative to its pre-industrial value (halo_0),,208,parameter
+chm_D_HALO_hfc227ea,report,chemistry,t,ppt,state,hfc227ea concentration anomaly relative to its pre-industrial value (halo_0),,209,parameter
+chm_D_HALO_hfc23,report,chemistry,t,ppt,state,hfc23 concentration anomaly relative to its pre-industrial value (halo_0),,203,parameter
+chm_D_HALO_hfc236fa,report,chemistry,t,ppt,state,hfc236fa concentration anomaly relative to its pre-industrial value (halo_0),,210,parameter
+chm_D_HALO_hfc245fa,report,chemistry,t,ppt,state,hfc245fa concentration anomaly relative to its pre-industrial value (halo_0),,211,parameter
+chm_D_HALO_hfc32,report,chemistry,t,ppt,state,hfc32 concentration anomaly relative to its pre-industrial value (halo_0),,204,parameter
+chm_D_HALO_hfc365mfc,report,chemistry,t,ppt,state,hfc365mfc concentration anomaly relative to its pre-industrial value (halo_0),,212,parameter
+chm_D_HALO_hfc41,report,chemistry,t,ppt,state,hfc41 concentration anomaly relative to its pre-industrial value (halo_0),,216,parameter
+chm_D_HALO_hfc4310mee,report,chemistry,t,ppt,state,hfc4310mee concentration anomaly relative to its pre-industrial value (halo_0),,213,parameter
+chm_D_HALO_lag,output,chemistry,"t,halo(48)",ppt,state,"Lagged halogenated gas concentration anomaly (relaxation with tau_lag), used for stratospheric sinks and EESC",,,
+chm_D_HALO_nf3,report,chemistry,t,ppt,state,nf3 concentration anomaly relative to its pre-industrial value (halo_0),,218,parameter
+chm_D_HALO_sf6,report,chemistry,t,ppt,state,sf6 concentration anomaly relative to its pre-industrial value (halo_0),,217,parameter
+chm_D_HALO_so2f2,report,chemistry,t,ppt,state,so2f2 concentration anomaly relative to its pre-industrial value (halo_0),,219,parameter
+chm_D_hv,output,chemistry,t,1,state,"Relative change of the stratospheric photolysis sink rate (fraction, 0 = pre-industrial)",,187,variable
+chm_D_HVSNK_CH4,output,chemistry,t,MtC/yr,per_year,"CH4 stratospheric sink anomaly (as C, negative = removal), annual rate",,189,variable
+chm_D_HVSNK_HALO,output,chemistry,"t,halo(48)",kt/yr,per_year,"Stratospheric sink anomaly of each halogenated gas (mass of the gas, negative = removal), annual rate",,,
+chm_D_HVSNK_N2O,output,chemistry,t,Mt N/yr,per_year,"N2O stratospheric photolysis sink anomaly (as N, negative = removal), annual rate",,191,variable
+chm_D_kOH,output,chemistry,t,1,state,"Relative change of the tropospheric OH sink rate (fraction, 0 = pre-industrial)",,186,variable
+chm_D_N2O,output,chemistry,t,ppb,state,N2O concentration anomaly relative to n2o_0,,177,variable
+chm_D_N2O_lag,output,chemistry,t,ppb,state,"Lagged N2O concentration anomaly (relaxation with tau_lag), used for photolysis and stratospheric ozone",,,
+chm_D_NO3,output,chemistry,t,Mt NO3,state,Nitrate aerosol burden anomaly relative to 1850 emissions,,198,variable
+chm_D_O3s,output,chemistry,t,DU,state,Stratospheric ozone column anomaly,,194,variable
+chm_D_O3t,output,chemistry,t,DU,state,Tropospheric ozone column anomaly,,192,variable
+chm_D_OHSNK_CH4,output,chemistry,t,MtC/yr,per_year,"CH4 tropospheric OH sink anomaly (as C, negative = removal), annual rate",,188,variable
+chm_D_OHSNK_HALO,output,chemistry,"t,halo(48)",kt/yr,per_year,"Tropospheric OH sink anomaly of each halogenated gas (mass of the gas, negative = removal), annual rate",,,
+chm_D_POA,output,chemistry,t,Mt OM,state,"Primary organic aerosol burden anomaly relative to 1850, scaled by scale_pom",,196,variable
+chm_D_SALT,output,chemistry,t,Mt,state,"Sea-salt burden anomaly (switched off, always 0)",,201,variable
+chm_D_SO4,output,chemistry,t,Mt SO4,state,Sulfate aerosol burden anomaly relative to 1850 emissions,,195,variable
+chm_D_SOA,output,chemistry,t,Mt,state,Secondary organic aerosol burden anomaly relative to 1850 emissions,,199,variable
+chm_D_XSNK_CH4,output,chemistry,t,MtC/yr,per_year,"CH4 soil and ocean sink anomaly (as C, negative = removal), annual rate",,190,variable
+chm_D_XSNK_HALO,output,chemistry,"t,halo(48)",kt/yr,per_year,"Other-sink (ocean, soil) anomaly of each halogenated gas (mass of the gas, negative = removal), annual rate",,,
+chm_emeth,output,chemistry,t,GtC/step,per_step,"CO2 (as C) from oxidation of fossil CH4, per step; added to CO2 emissions",,185,variable
+dat_sce_ems_bc,report,inputs,t,Mt BC/step,per_step,"Total (industrial + land-use) black carbon emissions as used by the model, per step",,400,parameter
+dat_sce_ems_bci,report,inputs,t,Mt BC/step,per_step,"Industrial (fossil and industry) black carbon emissions as used by the model, per step",,332,parameter
+dat_sce_ems_bcl,report,inputs,t,Mt BC/step,per_step,"Land-use black carbon emissions as used by the model, per step",,390,parameter
+dat_sce_ems_c2f6,report,inputs,t,kt C2F6/step,per_step,"C2F6 emissions as used by the model, per step (no land-use part)",,353,parameter
+dat_sce_ems_c3f8,report,inputs,t,kt C3F8/step,per_step,"C3F8 emissions as used by the model, per step (no land-use part)",,354,parameter
+dat_sce_ems_c4f10,report,inputs,t,kt C4F10/step,per_step,"C4F10 emissions as used by the model, per step (no land-use part)",,356,parameter
+dat_sce_ems_c5f12,report,inputs,t,kt C5F12/step,per_step,"C5F12 emissions as used by the model, per step (no land-use part)",,357,parameter
+dat_sce_ems_c6f14,report,inputs,t,kt C6F14/step,per_step,"C6F14 emissions as used by the model, per step (no land-use part)",,358,parameter
+dat_sce_ems_c7f16,report,inputs,t,kt C7F16/step,per_step,"C7F16 emissions as used by the model, per step (no land-use part)",,359,parameter
+dat_sce_ems_c8f18,report,inputs,t,kt C8F18/step,per_step,"C8F18 emissions as used by the model, per step (no land-use part)",,360,parameter
+dat_sce_ems_cc4f8,report,inputs,t,kt cC4F8/step,per_step,"cC4F8 emissions as used by the model, per step (no land-use part)",,355,parameter
+dat_sce_ems_ccl4,report,inputs,t,kt CCl4/step,per_step,"CCl4 emissions as used by the model, per step (no land-use part)",,367,parameter
+dat_sce_ems_cf4,report,inputs,t,kt CF4/step,per_step,"CF4 emissions as used by the model, per step (no land-use part)",,352,parameter
+dat_sce_ems_cfc11,report,inputs,t,kt CFC11/step,per_step,"CFC11 emissions as used by the model, per step (no land-use part)",,361,parameter
+dat_sce_ems_cfc113,report,inputs,t,kt CFC113/step,per_step,"CFC113 emissions as used by the model, per step (no land-use part)",,363,parameter
+dat_sce_ems_cfc114,report,inputs,t,kt CFC114/step,per_step,"CFC114 emissions as used by the model, per step (no land-use part)",,364,parameter
+dat_sce_ems_cfc115,report,inputs,t,kt CFC115/step,per_step,"CFC115 emissions as used by the model, per step (no land-use part)",,365,parameter
+dat_sce_ems_cfc12,report,inputs,t,kt CFC12/step,per_step,"CFC12 emissions as used by the model, per step (no land-use part)",,362,parameter
+dat_sce_ems_cfc13,report,inputs,t,kt CFC13/step,per_step,"CFC13 emissions as used by the model, per step (no land-use part)",,366,parameter
+dat_sce_ems_ch2cl2,report,inputs,t,kt CH2Cl2/step,per_step,"CH2Cl2 emissions as used by the model, per step (no land-use part)",,381,parameter
+dat_sce_ems_ch3br,report,inputs,t,kt CH3Br/step,per_step,"CH3Br emissions as used by the model, per step (no land-use part)",,379,parameter
+dat_sce_ems_ch3ccl3,report,inputs,t,kt CH3CCl3/step,per_step,"CH3CCl3 emissions as used by the model, per step (no land-use part)",,368,parameter
+dat_sce_ems_ch3cl,report,inputs,t,kt CH3Cl/step,per_step,"CH3Cl emissions as used by the model, per step (no land-use part)",,380,parameter
+dat_sce_ems_ch4,report,inputs,t,Mt CH4/step,per_step,"Total (industrial + land-use) CH4 emissions as used by the model, per step",,394,parameter
+dat_sce_ems_ch4i,report,inputs,t,Mt CH4/step,per_step,"Industrial (fossil and industry) CH4 emissions as used by the model, per step",,326,parameter
+dat_sce_ems_ch4l,report,inputs,t,Mt CH4/step,per_step,"Land-use CH4 emissions as used by the model, per step",,384,parameter
+dat_sce_ems_chcl3,report,inputs,t,kt CHCl3/step,per_step,"CHCl3 emissions as used by the model, per step (no land-use part)",,382,parameter
+dat_sce_ems_co,report,inputs,t,Mt CO/step,per_step,"Total (industrial + land-use) CO emissions as used by the model, per step",,397,parameter
+dat_sce_ems_co2,report,inputs,t,GtC/step,per_step,"Total (industrial + land-use) CO2 (as carbon) emissions as used by the model, per step",,393,parameter
+dat_sce_ems_co2i,report,inputs,t,GtC/step,per_step,"Industrial (fossil and industry) CO2 (as carbon) emissions as used by the model, per step",,325,parameter
+dat_sce_ems_co2l,report,inputs,t,GtC/step,per_step,"Land-use CO2 (as carbon) emissions as used by the model, per step",,383,parameter
+dat_sce_ems_coi,report,inputs,t,Mt CO/step,per_step,"Industrial (fossil and industry) CO emissions as used by the model, per step",,329,parameter
+dat_sce_ems_col,report,inputs,t,Mt CO/step,per_step,"Land-use CO emissions as used by the model, per step",,387,parameter
+dat_sce_ems_halon1202,report,inputs,t,kt Halon1202/step,per_step,"Halon1202 emissions as used by the model, per step (no land-use part)",,376,parameter
+dat_sce_ems_halon1211,report,inputs,t,kt Halon1211/step,per_step,"Halon1211 emissions as used by the model, per step (no land-use part)",,375,parameter
+dat_sce_ems_halon1301,report,inputs,t,kt Halon1301/step,per_step,"Halon1301 emissions as used by the model, per step (no land-use part)",,377,parameter
+dat_sce_ems_halon2402,report,inputs,t,kt Halon2402/step,per_step,"Halon2402 emissions as used by the model, per step (no land-use part)",,378,parameter
+dat_sce_ems_hcfc124,report,inputs,t,kt HCFC124/step,per_step,"HCFC124 emissions as used by the model, per step (no land-use part)",,370,parameter
+dat_sce_ems_hcfc132b,report,inputs,t,kt HCFC132b/step,per_step,"HCFC132b emissions as used by the model, per step (no land-use part)",,371,parameter
+dat_sce_ems_hcfc133a,report,inputs,t,kt HCFC133a/step,per_step,"HCFC133a emissions as used by the model, per step (no land-use part)",,372,parameter
+dat_sce_ems_hcfc141b,report,inputs,t,kt HCFC141b/step,per_step,"HCFC141b emissions as used by the model, per step (no land-use part)",,373,parameter
+dat_sce_ems_hcfc142b,report,inputs,t,kt HCFC142b/step,per_step,"HCFC142b emissions as used by the model, per step (no land-use part)",,374,parameter
+dat_sce_ems_hcfc22,report,inputs,t,kt HCFC22/step,per_step,"HCFC22 emissions as used by the model, per step (no land-use part)",,369,parameter
+dat_sce_ems_hfc125,report,inputs,t,kt HFC125/step,per_step,"HFC125 emissions as used by the model, per step (no land-use part)",,337,parameter
+dat_sce_ems_hfc134,report,inputs,t,kt HFC134/step,per_step,"HFC134 emissions as used by the model, per step (no land-use part)",,346,parameter
+dat_sce_ems_hfc134a,report,inputs,t,kt HFC134a/step,per_step,"HFC134a emissions as used by the model, per step (no land-use part)",,338,parameter
+dat_sce_ems_hfc143,report,inputs,t,kt HFC143/step,per_step,"HFC143 emissions as used by the model, per step (no land-use part)",,347,parameter
+dat_sce_ems_hfc143a,report,inputs,t,kt HFC143a/step,per_step,"HFC143a emissions as used by the model, per step (no land-use part)",,339,parameter
+dat_sce_ems_hfc152a,report,inputs,t,kt HFC152a/step,per_step,"HFC152a emissions as used by the model, per step (no land-use part)",,340,parameter
+dat_sce_ems_hfc227ea,report,inputs,t,kt HFC227ea/step,per_step,"HFC227ea emissions as used by the model, per step (no land-use part)",,341,parameter
+dat_sce_ems_hfc23,report,inputs,t,kt HFC23/step,per_step,"HFC23 emissions as used by the model, per step (no land-use part)",,335,parameter
+dat_sce_ems_hfc236fa,report,inputs,t,kt HFC236fa/step,per_step,"HFC236fa emissions as used by the model, per step (no land-use part)",,342,parameter
+dat_sce_ems_hfc245fa,report,inputs,t,kt HFC245fa/step,per_step,"HFC245fa emissions as used by the model, per step (no land-use part)",,343,parameter
+dat_sce_ems_hfc32,report,inputs,t,kt HFC32/step,per_step,"HFC32 emissions as used by the model, per step (no land-use part)",,336,parameter
+dat_sce_ems_hfc365mfc,report,inputs,t,kt HFC365mfc/step,per_step,"HFC365mfc emissions as used by the model, per step (no land-use part)",,344,parameter
+dat_sce_ems_hfc41,report,inputs,t,kt HFC41/step,per_step,"HFC41 emissions as used by the model, per step (no land-use part)",,348,parameter
+dat_sce_ems_hfc4310mee,report,inputs,t,kt HFC4310mee/step,per_step,"HFC4310mee emissions as used by the model, per step (no land-use part)",,345,parameter
+dat_sce_ems_n2o,report,inputs,t,Mt N/step,per_step,"Total (industrial + land-use) N2O (as N) emissions as used by the model, per step",,395,parameter
+dat_sce_ems_n2oi,report,inputs,t,Mt N/step,per_step,"Industrial (fossil and industry) N2O (as N) emissions as used by the model, per step",,327,parameter
+dat_sce_ems_n2ol,report,inputs,t,Mt N/step,per_step,"Land-use N2O (as N) emissions as used by the model, per step",,385,parameter
+dat_sce_ems_nf3,report,inputs,t,kt NF3/step,per_step,"NF3 emissions as used by the model, per step (no land-use part)",,350,parameter
+dat_sce_ems_nh3,report,inputs,t,Mt N/step,per_step,"Total (industrial + land-use) NH3 (as N) emissions as used by the model, per step",,402,parameter
+dat_sce_ems_nh3i,report,inputs,t,Mt N/step,per_step,"Industrial (fossil and industry) NH3 (as N) emissions as used by the model, per step",,334,parameter
+dat_sce_ems_nh3l,report,inputs,t,Mt N/step,per_step,"Land-use NH3 (as N) emissions as used by the model, per step",,392,parameter
+dat_sce_ems_nox,report,inputs,t,Mt N/step,per_step,"Total (industrial + land-use) NOx (as N) emissions as used by the model, per step",,399,parameter
+dat_sce_ems_noxi,report,inputs,t,Mt N/step,per_step,"Industrial (fossil and industry) NOx (as N) emissions as used by the model, per step",,331,parameter
+dat_sce_ems_noxl,report,inputs,t,Mt N/step,per_step,"Land-use NOx (as N) emissions as used by the model, per step",,389,parameter
+dat_sce_ems_oc,report,inputs,t,Mt OC/step,per_step,"Total (industrial + land-use) organic carbon emissions as used by the model, per step",,401,parameter
+dat_sce_ems_oci,report,inputs,t,Mt OC/step,per_step,"Industrial (fossil and industry) organic carbon emissions as used by the model, per step",,333,parameter
+dat_sce_ems_ocl,report,inputs,t,Mt OC/step,per_step,"Land-use organic carbon emissions as used by the model, per step",,391,parameter
+dat_sce_ems_sf6,report,inputs,t,kt SF6/step,per_step,"SF6 emissions as used by the model, per step (no land-use part)",,349,parameter
+dat_sce_ems_so2,report,inputs,t,Mt S/step,per_step,"Total (industrial + land-use) SO2 (as S) emissions as used by the model, per step",,396,parameter
+dat_sce_ems_so2f2,report,inputs,t,kt SO2F2/step,per_step,"SO2F2 emissions as used by the model, per step (no land-use part)",,351,parameter
+dat_sce_ems_so2i,report,inputs,t,Mt S/step,per_step,"Industrial (fossil and industry) SO2 (as S) emissions as used by the model, per step",,328,parameter
+dat_sce_ems_so2l,report,inputs,t,Mt S/step,per_step,"Land-use SO2 (as S) emissions as used by the model, per step",,386,parameter
+dat_sce_ems_voc,report,inputs,t,Mt VOC/step,per_step,"Total (industrial + land-use) non-methane VOC emissions as used by the model, per step",,398,parameter
+dat_sce_ems_voci,report,inputs,t,Mt VOC/step,per_step,"Industrial (fossil and industry) non-methane VOC emissions as used by the model, per step",,330,parameter
+dat_sce_ems_vocl,report,inputs,t,Mt VOC/step,per_step,"Land-use non-methane VOC emissions as used by the model, per step",,388,parameter
+doe_DelQL,output,doeclim,t,W/m2,state,Change in land radiative forcing from the previous step,Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_DelQO,output,doeclim,t,W/m2,state,Change in ocean radiative forcing from the previous step,Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_DPAST1,output,doeclim,t,K,state,Land-row ocean-diffusion memory term of the temperature system (fixed at 0),Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_DPAST2,output,doeclim,t,K,state,Sea-row ocean-diffusion memory term: convolution of the SST history with the diffusion kernel,Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_DQ1,output,doeclim,t,K,state,Land-row forcing term of the temperature system (dt/heatcap_land * mean forcing + correction),Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_DQ2,output,doeclim,t,K,state,Sea-row forcing term of the temperature system (dt/heatcap_mixed * mean forcing + correction),Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_DTEAUX1,output,doeclim,t,K,state,Land-row term A*T(n-1) of the temperature system,Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_DTEAUX2,output,doeclim,t,K,state,Sea-row term A*T(n-1) of the temperature system,Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_heat_interior,output,doeclim,t,1e22 J,state,Interior (sub-mixed-layer) ocean heat content anomaly from 1850 (accumulated with frac_ocean_deep applied twice),Kriegler (2005); Tanaka and Kriegler (2007),321,variable
+doe_heat_mixed,output,doeclim,t,6e22 J,state,"Mixed-layer heat content anomaly from 1850; value is the true anomaly in 1e22 J times dt (1/6), i.e. 6x too small. Corrected with --ref_compat=0.",Kriegler (2005); Tanaka and Kriegler (2007),320,variable
+doe_heatcontent,output,doeclim,t,1e22 J,state,"Ocean heat content anomaly from 1850, the step sum of doe_heatflux (nominally 1e22 J; known defect: the interior part is summed without dt, i.e. 6x too large, the mixed part is correct). Corrected with --ref_compat=0: heat_mixed + heat_interior.",Kriegler (2005); Tanaka and Kriegler (2007),323,variable
+doe_heatflux,output,doeclim,t,1e22 J/yr,per_year,"Total ocean heat uptake rate (mixed layer + frac_ocean_deep * interior); interior part in 1e22 J/yr, mixed part counted as 1e22 J per step (6x too small as a rate). With --ref_compat=0 the mixed-layer part is a rate (W/m2) and the RCMIP3 export uses x10 and the annual mean.",Kriegler (2005); Tanaka and Kriegler (2007),322,variable
+doe_heatflux_interior,output,doeclim,t,W/m2,state,Heat flux into the interior ocean per m2 of ocean area (incl. frac_ocean_deep),Kriegler (2005); Tanaka and Kriegler (2007),317,variable
+doe_heatflux_mixed,output,doeclim,t,W yr/m2/step,per_step,"Heat taken up by the mixed layer during the step, heatcap_mixed * (SST(n) - SST(n-1)); equals dt times the flux in W/m2. With --ref_compat=0 divided by dt (W/m2).",Kriegler (2005); Tanaka and Kriegler (2007),316,variable
+doe_QC1,output,doeclim,t,K,state,Land-row Hammer-Hollingsworth forcing correction term,Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_QC2,output,doeclim,t,K,state,Sea-row Hammer-Hollingsworth forcing correction term,Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_QL,output,doeclim,t,W/m2,state,Radiative forcing over land (equal to the global forcing),Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_QO,output,doeclim,t,W/m2,state,Radiative forcing over ocean (equal to the global forcing),Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_t2co_t,report,doeclim,t,K,state,Equilibrium climate sensitivity repeated over time (report series),Kriegler (2005); Tanaka and Kriegler (2007),324,parameter
+doe_tas,output,doeclim,t,K,state,Global mean surface air temperature anomaly (relative to the 1850 starting state),Kriegler (2005); Tanaka and Kriegler (2007),,
+doe_temp_landair,output,doeclim,t,K,state,Land surface air temperature anomaly,Kriegler (2005); Tanaka and Kriegler (2007),315,variable
+doe_temp_sst,output,doeclim,t,K,state,Sea-surface temperature anomaly,Kriegler (2005); Tanaka and Kriegler (2007),,
+eco2_accum_1850,report,report,t,Mt CO2,state,"Cumulative total CO2 emissions since 1850, as CO2 mass",,303,parameter
+eco2_accum_2017,report,report,t,Mt CO2,state,"Cumulative total CO2 emissions from 2017 on (0 before 2017), as CO2 mass",,304,parameter
+eco2i_accum_1850,report,report,t,Mt CO2,state,"Cumulative fossil and industrial CO2 emissions since 1850, as CO2 mass",,305,parameter
+eco2i_accum_2017,report,report,t,Mt CO2,state,"Cumulative fossil and industrial CO2 emissions from 2017 on (0 before 2017), as CO2 mass",,306,parameter
+eco2l_accum_1850,report,report,t,Mt CO2,state,"Cumulative land-use CO2 emissions since 1850, as CO2 mass",,307,parameter
+eco2l_accum_2017,report,report,t,Mt CO2,state,"Cumulative land-use CO2 emissions from 2017 on (0 before 2017), as CO2 mass",,308,parameter
+erf_AerDir,output,forcing,t,W/m2,state,Effective radiative forcing of aerosol-radiation interactions (all direct aerosol terms incl. dust and sea salt) (RF x AER_DIR efficacy),,108,variable
+erf_aero,output,forcing,t,W/m2,state,Effective radiative forcing of all aerosols (aerosol-radiation plus aerosol-cloud interactions) (sum of component ERFs),,119,variable
+erf_aero_excloud,output,forcing,t,W/m2,state,"Effective radiative forcing of aerosol-radiation interactions only (sulfate, primary and secondary organic, black carbon, nitrate, dust, sea salt) (RF x AER_DIR efficacy)",,120,variable
+erf_anthro,output,forcing,t,W/m2,state,"Effective radiative forcing of all anthropogenic agents (GHGs, aerosols, strat. water vapour, ozone, BC on snow, land cover, contrails) (sum of component ERFs)",,121,variable
+erf_anthro_other,output,forcing,t,W/m2,state,"Effective radiative forcing of other anthropogenic agents (BC on snow, strat. water vapour, contrails, halogenated gases, ozone) (sum of component ERFs)",,122,variable
+erf_BC,output,forcing,t,W/m2,state,"Effective radiative forcing of black carbon aerosol, direct effect (radiative efficiency x BC burden anomaly) (RF x AER_DIR efficacy)",,102,variable
+erf_BCsnow,output,forcing,t,W/m2,state,"Effective radiative forcing of black carbon deposited on snow and ice, from BC emission rate (RF x warmeff_bc_snow)",,110,variable
+erf_CFGS,output,forcing,t,W/m2,state,"Effective radiative forcing of F-gases not controlled by the Montreal Protocol (HFCs, PFCs, SF6, NF3, SO2F2) (RF x HALO efficacy)",,93,variable
+erf_CH4,output,forcing,t,W/m2,state,"Effective radiative forcing of methane (Etminan et al. 2016 by default, or Myhre et al. with CH4-N2O overlap) (RF x CH4 efficacy)",,90,variable
+erf_CHALO,output,forcing,t,W/m2,state,Effective radiative forcing of all 48 halogenated gases (RF x HALO efficacy),,95,variable
+erf_cloud,output,forcing,t,W/m2,state,Effective radiative forcing of aerosol-cloud interactions (logarithmic soluble-aerosol term plus BC semi-direct adjustment) (RF x CLOUD_ALBEDO efficacy),,109,variable
+erf_CMNT,output,forcing,t,W/m2,state,"Effective radiative forcing of Montreal Protocol gases (CFCs, HCFCs, halons, CCl4, CH3CCl3, CH3Br, CH3Cl, CH2Cl2, CHCl3) (RF x MHALO efficacy)",,94,variable
+erf_CO2,output,forcing,t,W/m2,state,"Effective radiative forcing of carbon dioxide (rescaled Etminan et al. 2016 formula by default, or 5.35 ln(C/C0)) (RF x CO2 efficacy)",,89,variable
+erf_co2ch4n2o,output,forcing,t,W/m2,state,"Effective radiative forcing of CO2, CH4 and N2O combined (sum of component ERFs)",,116,variable
+erf_con,output,forcing,t,W/m2,state,Effective radiative forcing of contrails and contrail-induced cirrus (prescribed input) (RF x CONTRAIL efficacy),,112,variable
+erf_DUST,output,forcing,t,W/m2,state,Effective radiative forcing of mineral dust (prescribed input) (RF x AER_DIR efficacy),,115,variable
+erf_FCFC,output,forcing,t,W/m2,state,"Effective radiative forcing of CFCs (CFC-11, -12, -113, -114, -115, -13) (RF x HALO efficacy)",,99,variable
+erf_FHFC,output,forcing,t,W/m2,state,Effective radiative forcing of hydrofluorocarbons (14 HFCs) (RF x HALO efficacy),,97,variable
+erf_FODS,output,forcing,t,W/m2,state,"Effective radiative forcing of ozone-depleting substances (20 gases: CFCs, HCFCs, halons, CCl4, CH3CCl3, CH3Br, CH3Cl) (RF x MHALO efficacy)",,96,variable
+erf_FPFC,output,forcing,t,W/m2,state,Effective radiative forcing of perfluorocarbons (9 PFCs) (RF x HALO efficacy),,98,variable
+erf_ghg,output,forcing,t,W/m2,state,"Effective radiative forcing of well-mixed greenhouse gases (CO2, CH4, N2O and halogenated gases) (sum of component ERFs)",,118,variable
+erf_H2Os,output,forcing,t,W/m2,state,Effective radiative forcing of stratospheric water vapour from CH4 oxidation (from lagged CH4) (RF x CH4OXSTRATH2O efficacy),,91,variable
+erf_HALO,output,forcing,"t,halo(48)",W/m2,state,Effective radiative forcing of each halogenated gas (radiative efficiency x concentration anomaly) (RF x HALO efficacy),,,
+erf_HALO_c2f6,report,forcing,t,W/m2,state,Effective radiative forcing of C2F6 (RF x halogen efficacy),,143,parameter
+erf_HALO_c3f8,report,forcing,t,W/m2,state,Effective radiative forcing of C3F8 (RF x halogen efficacy),,144,parameter
+erf_HALO_c4f10,report,forcing,t,W/m2,state,Effective radiative forcing of C4F10 (RF x halogen efficacy),,146,parameter
+erf_HALO_c5f12,report,forcing,t,W/m2,state,Effective radiative forcing of C5F12 (RF x halogen efficacy),,147,parameter
+erf_HALO_c6f14,report,forcing,t,W/m2,state,Effective radiative forcing of C6F14 (RF x halogen efficacy),,148,parameter
+erf_HALO_c7f16,report,forcing,t,W/m2,state,Effective radiative forcing of C7F16 (RF x halogen efficacy),,149,parameter
+erf_HALO_c8f18,report,forcing,t,W/m2,state,Effective radiative forcing of C8F18 (RF x halogen efficacy),,150,parameter
+erf_HALO_cc4f8,report,forcing,t,W/m2,state,Effective radiative forcing of c-C4F8 (RF x halogen efficacy),,145,parameter
+erf_HALO_ccl4,report,forcing,t,W/m2,state,Effective radiative forcing of CCl4 (RF x halogen efficacy),,157,parameter
+erf_HALO_cf4,report,forcing,t,W/m2,state,Effective radiative forcing of CF4 (RF x halogen efficacy),,142,parameter
+erf_HALO_cfc11,report,forcing,t,W/m2,state,Effective radiative forcing of CFC11 (RF x halogen efficacy),,151,parameter
+erf_HALO_cfc113,report,forcing,t,W/m2,state,Effective radiative forcing of CFC113 (RF x halogen efficacy),,153,parameter
+erf_HALO_cfc114,report,forcing,t,W/m2,state,Effective radiative forcing of CFC114 (RF x halogen efficacy),,154,parameter
+erf_HALO_cfc115,report,forcing,t,W/m2,state,Effective radiative forcing of CFC115 (RF x halogen efficacy),,155,parameter
+erf_HALO_cfc12,report,forcing,t,W/m2,state,Effective radiative forcing of CFC12 (RF x halogen efficacy),,152,parameter
+erf_HALO_cfc13,report,forcing,t,W/m2,state,Effective radiative forcing of CFC13 (RF x halogen efficacy),,156,parameter
+erf_HALO_ch2cl2,report,forcing,t,W/m2,state,Effective radiative forcing of CH2Cl2 (RF x halogen efficacy),,171,parameter
+erf_HALO_ch3br,report,forcing,t,W/m2,state,Effective radiative forcing of CH3Br (RF x halogen efficacy),,169,parameter
+erf_HALO_ch3ccl3,report,forcing,t,W/m2,state,Effective radiative forcing of CH3CCl3 (RF x halogen efficacy),,158,parameter
+erf_HALO_ch3cl,report,forcing,t,W/m2,state,Effective radiative forcing of CH3Cl (RF x halogen efficacy),,170,parameter
+erf_HALO_chcl3,report,forcing,t,W/m2,state,Effective radiative forcing of CHCl3 (RF x halogen efficacy),,172,parameter
+erf_HALO_halon1202,report,forcing,t,W/m2,state,Effective radiative forcing of Halon-1202 (RF x halogen efficacy),,166,parameter
+erf_HALO_halon1211,report,forcing,t,W/m2,state,Effective radiative forcing of Halon-1211 (RF x halogen efficacy),,165,parameter
+erf_HALO_halon1301,report,forcing,t,W/m2,state,Effective radiative forcing of Halon-1301 (RF x halogen efficacy),,167,parameter
+erf_HALO_halon2402,report,forcing,t,W/m2,state,Effective radiative forcing of Halon-2402 (RF x halogen efficacy),,168,parameter
+erf_HALO_hcfc124,report,forcing,t,W/m2,state,Effective radiative forcing of HCFC124 (RF x halogen efficacy),,160,parameter
+erf_HALO_hcfc132b,report,forcing,t,W/m2,state,Effective radiative forcing of HCFC132B (RF x halogen efficacy),,161,parameter
+erf_HALO_hcfc133a,report,forcing,t,W/m2,state,Effective radiative forcing of HCFC133A (RF x halogen efficacy),,162,parameter
+erf_HALO_hcfc141b,report,forcing,t,W/m2,state,Effective radiative forcing of HCFC141B (RF x halogen efficacy),,163,parameter
+erf_HALO_hcfc142b,report,forcing,t,W/m2,state,Effective radiative forcing of HCFC142B (RF x halogen efficacy),,164,parameter
+erf_HALO_hcfc22,report,forcing,t,W/m2,state,Effective radiative forcing of HCFC22 (RF x halogen efficacy),,159,parameter
+erf_HALO_hfc125,report,forcing,t,W/m2,state,Effective radiative forcing of HFC125 (RF x halogen efficacy),,127,parameter
+erf_HALO_hfc134,report,forcing,t,W/m2,state,Effective radiative forcing of HFC134 (RF x halogen efficacy),,136,parameter
+erf_HALO_hfc134a,report,forcing,t,W/m2,state,Effective radiative forcing of HFC134A (RF x halogen efficacy),,128,parameter
+erf_HALO_hfc143,report,forcing,t,W/m2,state,Effective radiative forcing of HFC143 (RF x halogen efficacy),,137,parameter
+erf_HALO_hfc143a,report,forcing,t,W/m2,state,Effective radiative forcing of HFC143A (RF x halogen efficacy),,129,parameter
+erf_HALO_hfc152a,report,forcing,t,W/m2,state,Effective radiative forcing of HFC152A (RF x halogen efficacy),,130,parameter
+erf_HALO_hfc227ea,report,forcing,t,W/m2,state,Effective radiative forcing of HFC227EA (RF x halogen efficacy),,131,parameter
+erf_HALO_hfc23,report,forcing,t,W/m2,state,Effective radiative forcing of HFC23 (RF x halogen efficacy),,125,parameter
+erf_HALO_hfc236fa,report,forcing,t,W/m2,state,Effective radiative forcing of HFC236FA (RF x halogen efficacy),,132,parameter
+erf_HALO_hfc245fa,report,forcing,t,W/m2,state,Effective radiative forcing of HFC245FA (RF x halogen efficacy),,133,parameter
+erf_HALO_hfc32,report,forcing,t,W/m2,state,Effective radiative forcing of HFC32 (RF x halogen efficacy),,126,parameter
+erf_HALO_hfc365mfc,report,forcing,t,W/m2,state,Effective radiative forcing of HFC365MFC (RF x halogen efficacy),,134,parameter
+erf_HALO_hfc41,report,forcing,t,W/m2,state,Effective radiative forcing of HFC41 (RF x halogen efficacy),,138,parameter
+erf_HALO_hfc4310mee,report,forcing,t,W/m2,state,Effective radiative forcing of HFC43-10mee (RF x halogen efficacy),,135,parameter
+erf_HALO_nf3,report,forcing,t,W/m2,state,Effective radiative forcing of NF3 (RF x halogen efficacy),,140,parameter
+erf_HALO_sf6,report,forcing,t,W/m2,state,Effective radiative forcing of SF6 (RF x halogen efficacy),,139,parameter
+erf_HALO_so2f2,report,forcing,t,W/m2,state,Effective radiative forcing of SO2F2 (RF x halogen efficacy),,141,parameter
+erf_LCC,output,forcing,t,W/m2,state,Effective radiative forcing of land-cover-change surface albedo (RF x warmeff_lcc),,111,variable
+erf_N2O,output,forcing,t,W/m2,state,"Effective radiative forcing of nitrous oxide (Etminan et al. 2016 by default, or Myhre et al. with CH4-N2O overlap) (RF x N2O efficacy)",,92,variable
+erf_natural,output,forcing,t,W/m2,state,Effective radiative forcing of natural agents (volcanic plus solar) (sum of component ERFs),,123,variable
+erf_NO3,output,forcing,t,W/m2,state,"Effective radiative forcing of nitrate aerosol, direct effect (RF x AER_DIR efficacy)",,103,variable
+erf_O3s,output,forcing,t,W/m2,state,Effective radiative forcing of stratospheric ozone (radiative efficiency x ozone column anomaly in DU) (RF x STRATOZ efficacy),,107,variable
+erf_O3t,output,forcing,t,W/m2,state,Effective radiative forcing of tropospheric ozone (radiative efficiency x ozone column anomaly in DU) (RF x TROPOZ efficacy),,106,variable
+erf_other_wmghg,output,forcing,t,W/m2,state,Effective radiative forcing of other well-mixed greenhouse gases (all halogenated gases; equals CHALO) (sum of component ERFs),,117,variable
+erf_POA,output,forcing,t,W/m2,state,"Effective radiative forcing of primary organic aerosol, direct effect (RF x AER_DIR efficacy)",,101,variable
+erf_SALT,output,forcing,t,W/m2,state,"Effective radiative forcing of sea-salt aerosol, direct effect (radiative efficiency is 0, so zero) (RF x AER_DIR efficacy)",,105,variable
+erf_SO4,output,forcing,t,W/m2,state,"Effective radiative forcing of sulfate aerosol, direct effect (RF x AER_DIR efficacy)",,100,variable
+erf_SOA,output,forcing,t,W/m2,state,"Effective radiative forcing of secondary organic aerosol, direct effect (RF x AER_DIR efficacy)",,104,variable
+erf_solar,output,forcing,t,W/m2,state,Effective radiative forcing of solar irradiance changes (prescribed input) (RF x SOLAR efficacy),,114,variable
+erf_tot,output,forcing,t,W/m2,state,"Effective radiative forcing of all agents, anthropogenic plus natural (relative to pre-industrial) (sum of component ERFs)",,124,variable
+erf_volc,output,forcing,t,W/m2,state,Effective radiative forcing of volcanic eruptions (prescribed input) (RF x warmeff_volc),,113,variable
+hct_atmos_flux,output,ocean_hector,"t,box(4)",PgC/step,per_step,"Air-sea CO2 flux into each surface box, positive into the ocean (0 for interior boxes)",Hartin et al. (2015); Takahashi et al. (2009),,
+hct_atmoSeaFlux,output,ocean_hector,t,PgC/step,per_step,"Total air-sea CO2 flux into the ocean, positive into the ocean",Hartin et al. (2015),,
+hct_bor,output,ocean_hector,"t,chem_box(2)",umol/kg,state,Total boron concentration in the surface box (416 umol/kg x S/35),Hartin et al. (2015); DOE (1994),,
+hct_calcium,output,ocean_hector,"t,chem_box(2)",1e6 mol/kg,state,"Calcium ion concentration in the surface box, stored as mol/kg divided by 1e6 (scaling cancels in Omega)",Hartin et al. (2015); Riley and Tongudai (1967),,
+hct_carbon,output,ocean_hector,"t,box(4)",PgC,state,Carbon content of each ocean box,Hartin et al. (2015),,
+hct_carbon_flux,output,ocean_hector,"t,box(4)",PgC/step,per_step,Net carbon change of each box to the next step (transport and exchange in minus out plus air-sea flux),Hartin et al. (2015),,
+hct_co2st,output,ocean_hector,"t,chem_box(2)",umol/kg,state,Dissolved CO2 (CO2*) concentration in the surface box,Hartin et al. (2015),,
+hct_co3,output,ocean_hector,"t,chem_box(2)",umol/kg,state,Carbonate ion concentration in the surface box,Hartin et al. (2015),,
+hct_dic,output,ocean_hector,"t,chem_box(2)",umol/kg,state,"Dissolved inorganic carbon concentration in the surface box (from box carbon, seawater density 1027 kg/m3)",Hartin et al. (2015),,
+hct_exchange,output,ocean_hector,"t,box(4),box(4)",PgC/step,per_step,Carbon moved by two-way exchange from box (first index) to box (second index) per step,Hartin et al. (2015),,
+hct_H,output,ocean_hector,"t,chem_box(2)",umol/kg,state,Hydrogen ion concentration [H+] in the surface box,Hartin et al. (2015),,
+hct_hco3,output,ocean_hector,"t,chem_box(2)",umol/kg,state,Bicarbonate ion concentration in the surface box,Hartin et al. (2015),,
+hct_K0,output,ocean_hector,"t,chem_box(2)",1e3 mol/m3/atm,state,"CO2 solubility K0 (Weiss 1974) in the surface box, mol/L/atm",Hartin et al. (2015); Weiss (1974),,
+hct_K1,output,ocean_hector,"t,chem_box(2)",umol/kg,state,"First dissociation constant of carbonic acid (Mehrbach refit by Lueker 2000), mol/kg x 1e6",Hartin et al. (2015); Lueker et al. (2000),,
+hct_K2,output,ocean_hector,"t,chem_box(2)",umol/kg,state,"Second dissociation constant of carbonic acid (Mehrbach refit by Lueker 2000), mol/kg x 1e6",Hartin et al. (2015); Lueker et al. (2000),,
+hct_Kb,output,ocean_hector,"t,chem_box(2)",umol/kg,state,"Dissociation constant of boric acid (DOE 1994), mol/kg x 1e6",Hartin et al. (2015); DOE (1994),,
+hct_Kh,output,ocean_hector,"t,chem_box(2)",mol/kg/atm,state,"Henry's law CO2 solubility (Weiss 1974), used to compute ocean pCO2",Hartin et al. (2015); Weiss (1974),,
+hct_Kspa,output,ocean_hector,"t,chem_box(2)",1e-6 mol2/kg2,state,"Aragonite solubility product (Mucci 1983), mol2/kg2 x 1e6",Hartin et al. (2015); Mucci (1983),,
+hct_Kspc,output,ocean_hector,"t,chem_box(2)",1e-6 mol2/kg2,state,"Calcite solubility product (Mucci 1983), mol2/kg2 x 1e6",Hartin et al. (2015); Mucci (1983),,
+hct_Kw,output,ocean_hector,"t,chem_box(2)",1e-6 mol2/kg2,state,"Ion product of water (Millero 1995), mol2/kg2 x 1e6",Hartin et al. (2015); Millero (1995),,
+hct_lnK0,output,ocean_hector,"t,chem_box(2)",1,state,Natural log of CO2 solubility K0 (in mol/L/atm),Hartin et al. (2015); Weiss (1974),,
+hct_lnKb,output,ocean_hector,"t,chem_box(2)",1,state,Natural log of the boric acid dissociation constant (in mol/kg),Hartin et al. (2015); DOE (1994),,
+hct_lnKw,output,ocean_hector,"t,chem_box(2)",1,state,Natural log of the ion product of water (in mol2/kg2),Hartin et al. (2015); Millero (1995),,
+hct_log10Kspa,output,ocean_hector,"t,chem_box(2)",1,state,Base-10 log of the aragonite solubility product (in mol2/kg2),Hartin et al. (2015); Mucci (1983),,
+hct_log10Kspc,output,ocean_hector,"t,chem_box(2)",1,state,Base-10 log of the calcite solubility product (in mol2/kg2),Hartin et al. (2015); Mucci (1983),,
+hct_nKhwe74,output,ocean_hector,"t,chem_box(2)",1,state,"Natural log of the Henry's law CO2 solubility Kh (Weiss 1974, in mol/kg/atm)",Hartin et al. (2015); Weiss (1974),,
+hct_OmegaAr,output,ocean_hector,"t,chem_box(2)",1,state,Aragonite saturation state of the surface box,Hartin et al. (2015),,
+hct_OmegaCa,output,ocean_hector,"t,chem_box(2)",1,state,Calcite saturation state of the surface box,Hartin et al. (2015),,
+hct_PCO2o,output,ocean_hector,"t,chem_box(2)",uatm,state,Partial pressure of CO2 in surface seawater,Hartin et al. (2015),,
+hct_pH,output,ocean_hector,"t,chem_box(2)",1,state,"Surface seawater pH (total scale, -log10 [H+] in mol/kg)",Hartin et al. (2015),,
+hct_pK1mehr,output,ocean_hector,"t,chem_box(2)",1,state,"pK1 of carbonic acid (-log10 K1 in mol/kg), Mehrbach refit by Lueker 2000",Hartin et al. (2015); Lueker et al. (2000),,
+hct_pK2mehr,output,ocean_hector,"t,chem_box(2)",1,state,"pK2 of carbonic acid (-log10 K2 in mol/kg), Mehrbach refit by Lueker 2000",Hartin et al. (2015); Lueker et al. (2000),,
+hct_Revelle,output,ocean_hector,"t,chem_box(2)",1,state,Revelle (buffer) factor approximated as DIC/CO3 ratio of the surface box,Hartin et al. (2015),,
+hct_Sc,output,ocean_hector,"t,chem_box(2)",1,state,Schmidt number of CO2 in seawater (Wanninkhof 1992),Hartin et al. (2015); Wanninkhof (1992),,
+hct_surface_cpool,output,ocean_hector,t,PgC,state,Carbon in the two surface boxes (LL + HL),Hartin et al. (2015),,
+hct_Tbox,output,ocean_hector,"t,box(4)",degC,state,Temperature of each box: global surface temperature anomaly x warming factor + 15 degC + box offset,Hartin et al. (2015),,
+hct_tc,output,ocean_hector,"t,box(4)",degC,state,Box temperature in degrees Celsius (same as hct_Tbox),Hartin et al. (2015),,
+hct_tk,output,ocean_hector,"t,box(4)",K,state,Box temperature in kelvin,Hartin et al. (2015),,
+hct_total_carbon,output,ocean_hector,t,PgC,state,Total carbon in the four ocean boxes,Hartin et al. (2015),,
+hct_total_cpool,output,ocean_hector,t,PgC,state,Total carbon in the four ocean boxes (same as hct_total_carbon; reported as the ocean total pool),Hartin et al. (2015),,
+hct_Tr,output,ocean_hector,"t,chem_box(2)",12 g C/m2/uatm/yr,per_year,"Air-sea CO2 gas transfer coefficient (Takahashi 2009), gC per m2 per month per uatm",Hartin et al. (2015); Takahashi et al. (2009),,
+hct_transport,output,ocean_hector,"t,box(4),box(4)",PgC/step,per_step,Carbon moved by advection from box (first index) to box (second index) per step,Hartin et al. (2015),,
+inst_TCRE,report,report,t,K/Mt CO2,state,Instantaneous TCRE: surface air temperature anomaly divided by cumulative total CO2 emissions since 1850 (0 where cumulative emissions are 0),,309,parameter
+lnd_atmoLndFlux,output,land,t,GtC/step,per_step,"Net atmosphere-to-land carbon flux (change of total land carbon over the step; positive = uptake), enters the atmosphere at the next step",,,
+lnd_dcyH,output,land,t,GtC/step,per_step,Detritus pool decay flux per step,,295,variable
+lnd_dcyP,output,land,t,GtC/step,per_step,Plant pool decay flux per step,,294,variable
+lnd_dcyS,output,land,t,GtC/step,per_step,Soil pool decay flux per step (respired to the atmosphere),,296,variable
+lnd_detr_pool,output,land,t,GtC,state,Detritus (litter) carbon pool,,256,variable
+lnd_dhElu,output,land,t,GtC/step,per_step,"Net land-use CO2 emissions allocated to the detritus pool, per step",,274,variable
+lnd_dpElu,output,land,t,GtC/step,per_step,"Net land-use CO2 emissions allocated to the plant pool, per step",,273,variable
+lnd_dsElu,output,land,t,GtC/step,per_step,"Net land-use CO2 emissions allocated to the soil pool, per step",,275,variable
+lnd_fert_b,output,land,t,1/ppm,state,Shape parameter b of the sigmoidal (rectangular hyperbolic) CO2 fertilisation form (time-constant),,264,variable
+lnd_fert_fact,output,land,t,1,state,"CO2 fertilisation multiplier of NPP and plant respiration (blend of log and sigmoid forms, divided by fert_scale)",,261,variable
+lnd_fert_log,output,land,t,1,state,"Logarithmic CO2 fertilisation form, 1 + beta*ln(CO2/CO2_1850)",,262,variable
+lnd_fert_r,output,land,t,1,state,"Ratio of the log fertilisation response at 680 ppm to that at 340 ppm, used to fit the sigmoidal form (time-constant)",,263,variable
+lnd_fert_sig,output,land,t,1,state,"Sigmoidal (rectangular hyperbolic, Gifford) CO2 fertilisation form",,265,variable
+lnd_fg,output,land,t,1,state,"Temperature feedback multiplier of NPP, exp(k_npp*dT)",,269,variable
+lnd_fh,output,land,t,1,state,"Temperature feedback multiplier of detritus decay, exp(k_detr*dT)",,271,variable
+lnd_fr,output,land,t,1,state,"Temperature feedback multiplier of plant respiration, exp(k_resp*dT)",,270,variable
+lnd_fs,output,land,t,1,state,"Temperature feedback multiplier of soil decay, exp(k_soil*dT)",,272,variable
+lnd_grossD,output,land,t,GtC/step,per_step,"Total gross land-use flux (net land-use emissions plus regrowth terms of all pools), per step",,287,variable
+lnd_grossDH,output,land,t,GtC/step,per_step,"Gross land-use flux removed from the detritus pool (net allocation plus regrowth term), per step",,289,variable
+lnd_grossDP,output,land,t,GtC/step,per_step,"Gross land-use flux removed from the plant pool (net allocation plus regrowth term), per step",,288,variable
+lnd_grossDS,output,land,t,GtC/step,per_step,"Gross land-use flux removed from the soil pool (net allocation plus regrowth term), per step",,290,variable
+lnd_h2s,output,land,t,GtC/step,per_step,"Carbon transferred from detritus to soil, per step",,298,variable
+lnd_landSink,output,land,t,GtC/step,per_step,"Land carbon sink: same as the net atmosphere-to-land flux (positive = uptake), per step",,,
+lnd_npp,output,land,t,GtC/step,per_step,Net primary production per step,,258,variable
+lnd_nppH,output,land,t,GtC/step,per_step,"NPP allocated to the detritus pool, per step",,267,variable
+lnd_nppP,output,land,t,GtC/step,per_step,"NPP allocated to the plant pool, per step",,266,variable
+lnd_nppS,output,land,t,GtC/step,per_step,"NPP allocated to the soil pool, per step",,268,variable
+lnd_p2h,output,land,t,GtC/step,per_step,"Carbon transferred from plant to detritus, per step",,299,variable
+lnd_p2s,output,land,t,GtC/step,per_step,"Carbon transferred from plant to soil, per step (uses the previous step plant decay; 0 at the first step)",,300,variable
+lnd_plnt_pool,output,land,t,GtC,state,Plant (vegetation) carbon pool,,255,variable
+lnd_regrow,report,land,t,GtC/step,per_step,"Total regrowth term; declared but has no equation, always 0",,283,variable
+lnd_regrowH,output,land,t,GtC/step,per_step,"Regrowth term of the detritus pool (linear in its turnover time), added to the gross land-use flux, per step",,285,variable
+lnd_regrowP,output,land,t,GtC/step,per_step,"Regrowth term of the plant pool (linear in its turnover time), added to the gross land-use flux, per step",,284,variable
+lnd_regrowS,output,land,t,GtC/step,per_step,"Regrowth term of the soil pool (linear in its turnover time), added to the gross land-use flux, per step",,286,variable
+lnd_resp,output,land,t,GtC/step,per_step,"Plant (autotrophic) respiration per step, removed from the plant pool",,259,variable
+lnd_rh,output,land,t,GtC/step,per_step,"Total respiration to the atmosphere: plant respiration + respired detritus decay + soil decay, per step",,260,variable
+lnd_rhh,output,land,t,GtC/step,per_step,"Respired part of detritus decay (not transferred to soil), per step",,297,variable
+lnd_soil_pool,output,land,t,GtC,state,Soil carbon pool,,257,variable
+lnd_sumElu,output,land,t,GtC,state,"Cumulative net land-use CO2 emissions since 1850, all pools",,279,variable
+lnd_sumHElu,output,land,t,GtC,state,Cumulative net land-use CO2 emissions allocated to the detritus pool since 1850 (including the current step),,277,variable
+lnd_sumPElu,output,land,t,GtC,state,Cumulative net land-use CO2 emissions allocated to the plant pool since 1850 (including the current step),,276,variable
+lnd_sumSElu,output,land,t,GtC,state,Cumulative net land-use CO2 emissions allocated to the soil pool since 1850 (including the current step),,278,variable
+lnd_tauH,output,land,t,step,state,"Turnover (relaxation) time of the detritus pool, in model steps",,281,variable
+lnd_tauP,output,land,t,step,state,"Turnover (relaxation) time of the plant pool, in model steps",,280,variable
+lnd_tauS,output,land,t,step,state,"Turnover (relaxation) time of the soil pool, in model steps",,282,variable
+lnd_terrest_pool,output,land,t,GtC,state,Total land carbon (plant + detritus + soil),,,
+lnd_thh,output,land,t,1/step,per_step,"Half decay coefficient of the detritus pool, 0.5/tau times its temperature feedback; decay flux = 2*th*pool (trapezoidal scheme)",,292,variable
+lnd_thp,output,land,t,1/step,per_step,"Half decay coefficient of the plant pool, 0.5/tau; decay flux = 2*th*pool (trapezoidal scheme)",,291,variable
+lnd_ths,output,land,t,1/step,per_step,"Half decay coefficient of the soil pool, 0.5/tau times its temperature feedback; decay flux = 2*th*pool (trapezoidal scheme)",,293,variable
+ocn_atmoSeaFlux,output,ocean_oscar,t,GtC/step,per_step,Net atmosphere-to-ocean carbon flux per step (positive = ocean uptake),Joos et al. (1996),,
+ocn_D_CSURF,output,ocean_oscar,"t,box(8)",GtC,state,Surface-ocean carbon anomaly per box at the end of the step,Joos et al. (1996),,
+ocn_D_CSURF_all,output,ocean_oscar,t,GtC,state,Total surface-ocean carbon anomaly (sum over boxes),Joos et al. (1996),314,variable
+ocn_D_CSURF_sub,output,ocean_oscar,"t,box(8),substep(4)",GtC,state,Surface-ocean carbon anomaly per box at each sub-step,Joos et al. (1996),,
+ocn_D_dic,output,ocean_oscar,t,umol/kg,state,Surface-ocean dissolved inorganic carbon anomaly (last sub-step),Joos et al. (1996),312,variable
+ocn_D_dic_sub,output,ocean_oscar,"t,substep(4)",umol/kg,state,Surface-ocean DIC anomaly at each sub-step,Joos et al. (1996),,
+ocn_D_FCIRC,output,ocean_oscar,"t,box(8)",GtC/yr,per_year,Carbon export from each surface box to the deep ocean (last sub-step),Joos et al. (1996),,
+ocn_D_FCIRC_sub,output,ocean_oscar,"t,box(8),substep(4)",GtC/yr,per_year,Carbon export from each surface box to the deep ocean at each sub-step,Joos et al. (1996),,
+ocn_D_FIN,output,ocean_oscar,"t,box(8)",GtC/yr,per_year,Air-to-sea carbon influx per box from the atmospheric CO2 anomaly,Joos et al. (1996),,
+ocn_D_FOUT,output,ocean_oscar,"t,box(8)",GtC/yr,per_year,Sea-to-air carbon outflux per box from the surface pCO2 anomaly (last sub-step),Joos et al. (1996),,
+ocn_D_FOUT_sub,output,ocean_oscar,"t,box(8),substep(4)",GtC/yr,per_year,Sea-to-air carbon outflux per box at each sub-step,Joos et al. (1996),,
+ocn_D_mld,output,ocean_oscar,t,m,state,Mixed-layer depth anomaly,Joos et al. (1996),311,variable
+ocn_D_pCO2,output,ocean_oscar,t,ppm,state,"Surface-ocean pCO2 anomaly (last sub-step), expressed as atmospheric-equivalent mixing ratio",Joos et al. (1996),313,variable
+ocn_D_pCO2_sub,output,ocean_oscar,"t,substep(4)",ppm,state,Surface-ocean pCO2 anomaly at each sub-step,Joos et al. (1996),,
+ocn_heat,report,ocean_oscar,t,1e22 J,state,Ocean heat content anomaly reported as doe_heat_mixed + frac_ocean_deep * doe_heat_interior (mixed part 6x too small; extra frac_ocean_deep factor). Corrected with --ref_compat=0: heat_mixed + heat_interior.,Joos et al. (1996),310,parameter
+ocn_surface_cpool,output,ocean_oscar,t,GtC,state,Surface-ocean carbon pool (900 GtC pre-industrial plus accumulated uptake),Joos et al. (1996),,
+ocn_total_cpool,output,ocean_oscar,t,GtC,state,Total ocean carbon pool (surface plus 37100 GtC intermediate/deep),Joos et al. (1996),,
+rfc_aero,output,forcing,t,W/m2,state,Radiative forcing of all aerosols (aerosol-radiation plus aerosol-cloud interactions),,26,variable
+rfc_aero_excloud,output,forcing,t,W/m2,state,"Radiative forcing of aerosol-radiation interactions only (sulfate, primary and secondary organic, black carbon, nitrate, dust, sea salt)",,27,variable
+rfc_anthro,output,forcing,t,W/m2,state,"Radiative forcing of all anthropogenic agents (GHGs, aerosols, strat. water vapour, ozone, BC on snow, land cover, contrails)",,28,variable
+rfc_anthro_other,output,forcing,t,W/m2,state,"Radiative forcing of other anthropogenic agents (BC on snow, strat. water vapour, contrails, halogenated gases, ozone)",,30,variable
+rfc_atm,output,forcing,t,W/m2,state,"Part of the radiative forcing absorbed in the atmosphere (agent forcings weighted by absorption factors), used for the precipitation response",,33,variable
+rfc_BC,output,forcing,t,W/m2,state,"Radiative forcing of black carbon aerosol, direct effect (radiative efficiency x BC burden anomaly)",,14,variable
+rfc_BCsnow,output,forcing,t,W/m2,state,"Radiative forcing of black carbon deposited on snow and ice, from BC emission rate",,20,variable
+rfc_CFGS,output,forcing,t,W/m2,state,"Radiative forcing of F-gases not controlled by the Montreal Protocol (HFCs, PFCs, SF6, NF3, SO2F2)",,37,variable
+rfc_CH4,output,forcing,t,W/m2,state,"Radiative forcing of methane (Etminan et al. 2016 by default, or Myhre et al. with CH4-N2O overlap)",,2,variable
+rfc_CH4_Mbar,output,forcing,t,ppb,state,"Mean of current and reference CH4 concentration, (M + M0)/2, used in the Etminan CH4/N2O formulas (NaN with Myhre)",Etminan et al. (2016),,
+rfc_CHALO,output,forcing,t,W/m2,state,Radiative forcing of all 48 halogenated gases,,39,variable
+rfc_cloud,output,forcing,t,W/m2,state,Radiative forcing of aerosol-cloud interactions (logarithmic soluble-aerosol term plus BC semi-direct adjustment),,19,variable
+rfc_CMNT,output,forcing,t,W/m2,state,"Radiative forcing of Montreal Protocol gases (CFCs, HCFCs, halons, CCl4, CH3CCl3, CH3Br, CH3Cl, CH2Cl2, CHCl3)",,38,variable
+rfc_CO2,output,forcing,t,W/m2,state,"Radiative forcing of carbon dioxide (rescaled Etminan et al. 2016 formula by default, or 5.35 ln(C/C0))",,1,variable
+rfc_CO2_Cbar,output,forcing,t,ppm,state,"Mean of current and reference CO2 concentration, (C + C0)/2, used in the Etminan N2O formula (NaN with Myhre)",Etminan et al. (2016),,
+rfc_co2ch4n2o,output,forcing,t,W/m2,state,"Radiative forcing of CO2, CH4 and N2O combined",,24,variable
+rfc_con,output,forcing,t,W/m2,state,Radiative forcing of contrails and contrail-induced cirrus (prescribed input),,40,parameter
+rfc_DUST,output,forcing,t,W/m2,state,Radiative forcing of mineral dust (prescribed input),,17,parameter
+rfc_FCFC,output,forcing,t,W/m2,state,"Radiative forcing of CFCs (CFC-11, -12, -113, -114, -115, -13)",,8,variable
+rfc_FHFC,output,forcing,t,W/m2,state,Radiative forcing of hydrofluorocarbons (14 HFCs),,5,variable
+rfc_FODS,output,forcing,t,W/m2,state,"Radiative forcing of ozone-depleting substances (20 gases: CFCs, HCFCs, halons, CCl4, CH3CCl3, CH3Br, CH3Cl)",,7,variable
+rfc_FPFC,output,forcing,t,W/m2,state,Radiative forcing of perfluorocarbons (9 PFCs),,6,variable
+rfc_ghg,output,forcing,t,W/m2,state,"Radiative forcing of well-mixed greenhouse gases (CO2, CH4, N2O and halogenated gases)",,25,variable
+rfc_H2Os,output,forcing,t,W/m2,state,Radiative forcing of stratospheric water vapour from CH4 oxidation (from lagged CH4),,3,variable
+rfc_HALO,output,forcing,"t,halo(48)",W/m2,state,Radiative forcing of each halogenated gas (radiative efficiency x concentration anomaly),,,
+rfc_HALO_c2f6,report,forcing,t,W/m2,state,Radiative forcing of C2F6,,59,parameter
+rfc_HALO_c3f8,report,forcing,t,W/m2,state,Radiative forcing of C3F8,,60,parameter
+rfc_HALO_c4f10,report,forcing,t,W/m2,state,Radiative forcing of C4F10,,62,parameter
+rfc_HALO_c5f12,report,forcing,t,W/m2,state,Radiative forcing of C5F12,,63,parameter
+rfc_HALO_c6f14,report,forcing,t,W/m2,state,Radiative forcing of C6F14,,64,parameter
+rfc_HALO_c7f16,report,forcing,t,W/m2,state,Radiative forcing of C7F16,,65,parameter
+rfc_HALO_c8f18,report,forcing,t,W/m2,state,Radiative forcing of C8F18,,66,parameter
+rfc_HALO_cc4f8,report,forcing,t,W/m2,state,Radiative forcing of c-C4F8,,61,parameter
+rfc_HALO_ccl4,report,forcing,t,W/m2,state,Radiative forcing of CCl4,,73,parameter
+rfc_HALO_cf4,report,forcing,t,W/m2,state,Radiative forcing of CF4,,58,parameter
+rfc_HALO_cfc11,report,forcing,t,W/m2,state,Radiative forcing of CFC11,,67,parameter
+rfc_HALO_cfc113,report,forcing,t,W/m2,state,Radiative forcing of CFC113,,69,parameter
+rfc_HALO_cfc114,report,forcing,t,W/m2,state,Radiative forcing of CFC114,,70,parameter
+rfc_HALO_cfc115,report,forcing,t,W/m2,state,Radiative forcing of CFC115,,71,parameter
+rfc_HALO_cfc12,report,forcing,t,W/m2,state,Radiative forcing of CFC12,,68,parameter
+rfc_HALO_cfc13,report,forcing,t,W/m2,state,Radiative forcing of CFC13,,72,parameter
+rfc_HALO_ch2cl2,report,forcing,t,W/m2,state,Radiative forcing of CH2Cl2,,87,parameter
+rfc_HALO_ch3br,report,forcing,t,W/m2,state,Radiative forcing of CH3Br,,85,parameter
+rfc_HALO_ch3ccl3,report,forcing,t,W/m2,state,Radiative forcing of CH3CCl3,,74,parameter
+rfc_HALO_ch3cl,report,forcing,t,W/m2,state,Radiative forcing of CH3Cl,,86,parameter
+rfc_HALO_chcl3,report,forcing,t,W/m2,state,Radiative forcing of CHCl3,,88,parameter
+rfc_HALO_halon1202,report,forcing,t,W/m2,state,Radiative forcing of Halon-1202,,82,parameter
+rfc_HALO_halon1211,report,forcing,t,W/m2,state,Radiative forcing of Halon-1211,,81,parameter
+rfc_HALO_halon1301,report,forcing,t,W/m2,state,Radiative forcing of Halon-1301,,83,parameter
+rfc_HALO_halon2402,report,forcing,t,W/m2,state,Radiative forcing of Halon-2402,,84,parameter
+rfc_HALO_hcfc124,report,forcing,t,W/m2,state,Radiative forcing of HCFC124,,76,parameter
+rfc_HALO_hcfc132b,report,forcing,t,W/m2,state,Radiative forcing of HCFC132B,,77,parameter
+rfc_HALO_hcfc133a,report,forcing,t,W/m2,state,Radiative forcing of HCFC133A,,78,parameter
+rfc_HALO_hcfc141b,report,forcing,t,W/m2,state,Radiative forcing of HCFC141B,,79,parameter
+rfc_HALO_hcfc142b,report,forcing,t,W/m2,state,Radiative forcing of HCFC142B,,80,parameter
+rfc_HALO_hcfc22,report,forcing,t,W/m2,state,Radiative forcing of HCFC22,,75,parameter
+rfc_HALO_hfc125,report,forcing,t,W/m2,state,Radiative forcing of HFC125,,43,parameter
+rfc_HALO_hfc134,report,forcing,t,W/m2,state,Radiative forcing of HFC134,,52,parameter
+rfc_HALO_hfc134a,report,forcing,t,W/m2,state,Radiative forcing of HFC134A,,44,parameter
+rfc_HALO_hfc143,report,forcing,t,W/m2,state,Radiative forcing of HFC143,,53,parameter
+rfc_HALO_hfc143a,report,forcing,t,W/m2,state,Radiative forcing of HFC143A,,45,parameter
+rfc_HALO_hfc152a,report,forcing,t,W/m2,state,Radiative forcing of HFC152A,,46,parameter
+rfc_HALO_hfc227ea,report,forcing,t,W/m2,state,Radiative forcing of HFC227EA,,47,parameter
+rfc_HALO_hfc23,report,forcing,t,W/m2,state,Radiative forcing of HFC23,,41,parameter
+rfc_HALO_hfc236fa,report,forcing,t,W/m2,state,Radiative forcing of HFC236FA,,48,parameter
+rfc_HALO_hfc245fa,report,forcing,t,W/m2,state,Radiative forcing of HFC245FA,,49,parameter
+rfc_HALO_hfc32,report,forcing,t,W/m2,state,Radiative forcing of HFC32,,42,parameter
+rfc_HALO_hfc365mfc,report,forcing,t,W/m2,state,Radiative forcing of HFC365MFC,,50,parameter
+rfc_HALO_hfc41,report,forcing,t,W/m2,state,Radiative forcing of HFC41,,54,parameter
+rfc_HALO_hfc4310mee,report,forcing,t,W/m2,state,Radiative forcing of HFC43-10mee,,51,parameter
+rfc_HALO_nf3,report,forcing,t,W/m2,state,Radiative forcing of NF3,,56,parameter
+rfc_HALO_sf6,report,forcing,t,W/m2,state,Radiative forcing of SF6,,55,parameter
+rfc_HALO_so2f2,report,forcing,t,W/m2,state,Radiative forcing of SO2F2,,57,parameter
+rfc_HFC,report,forcing,"t,dim(14)",W/m2,state,"Radiative forcing of each of the HFCs (14 gases), per gas",,34,variable
+rfc_LCC,output,forcing,t,W/m2,state,Radiative forcing of land-cover-change surface albedo,,21,variable
+rfc_LCC_lnd,output,forcing,"t,land_type(5)",W/m2,state,Land-cover-change albedo radiative forcing by land type,,,
+rfc_LCC_rgn,output,forcing,"t,region(11)",W/m2,state,Land-cover-change albedo radiative forcing by region,,,
+rfc_N2O,output,forcing,t,W/m2,state,"Radiative forcing of nitrous oxide (Etminan et al. 2016 by default, or Myhre et al. with CH4-N2O overlap)",,4,variable
+rfc_N2O_Nbar,output,forcing,t,ppb,state,"Mean of current and reference N2O concentration, (N + N0)/2, used in the Etminan formulas (NaN with Myhre)",Etminan et al. (2016),,
+rfc_natural,output,forcing,t,W/m2,state,Radiative forcing of natural agents (volcanic plus solar),,31,variable
+rfc_NO3,output,forcing,t,W/m2,state,"Radiative forcing of nitrate aerosol, direct effect",,15,variable
+rfc_O3,report,forcing,t,W/m2,state,"Radiative forcing of ozone, tropospheric plus stratospheric",,9,parameter
+rfc_O3s,output,forcing,t,W/m2,state,Radiative forcing of stratospheric ozone (radiative efficiency x ozone column anomaly in DU),,11,variable
+rfc_O3t,output,forcing,t,W/m2,state,Radiative forcing of tropospheric ozone (radiative efficiency x ozone column anomaly in DU),,10,variable
+rfc_ODS,report,forcing,"t,dim(20)",W/m2,state,"Radiative forcing of each of the ozone-depleting substances (20 gases), per gas",,36,variable
+rfc_other_wmghg,output,forcing,t,W/m2,state,Radiative forcing of other well-mixed greenhouse gases (all halogenated gases; equals CHALO),,29,variable
+rfc_PFC,report,forcing,"t,dim(9)",W/m2,state,"Radiative forcing of each of the PFCs (9 gases), per gas",,35,variable
+rfc_POA,output,forcing,t,W/m2,state,"Radiative forcing of primary organic aerosol, direct effect",,13,variable
+rfc_SALT,output,forcing,t,W/m2,state,"Radiative forcing of sea-salt aerosol, direct effect (radiative efficiency is 0, so zero)",,18,variable
+rfc_SO4,output,forcing,t,W/m2,state,"Radiative forcing of sulfate aerosol, direct effect",,12,variable
+rfc_SOA,output,forcing,t,W/m2,state,"Radiative forcing of secondary organic aerosol, direct effect",,16,variable
+rfc_solar,output,forcing,t,W/m2,state,Radiative forcing of solar irradiance changes (prescribed input),,23,parameter
+rfc_tot,output,forcing,t,W/m2,state,"Radiative forcing of all agents, anthropogenic plus natural (relative to pre-industrial)",,32,variable
+rfc_volc,output,forcing,t,W/m2,state,Radiative forcing of volcanic eruptions (prescribed input),,22,parameter
+scm_atmo_pool,output,coupling,t,GtC,state,Atmospheric carbon pool,,251,variable
+scm_atmoCO2,output,coupling,t,ppm,state,"Atmospheric CO2 concentration (pool / 2.123 GtC per ppm, or prescribed)",,,
+scm_atmoLndFlux,output,coupling,t,GtC/step,per_step,"Net atmosphere-to-land carbon flux (positive = uptake), per step",,302,variable
+scm_atmoSeaFlux,output,coupling,t,GtC/step,per_step,"Net atmosphere-to-ocean carbon flux (positive = uptake), per step",,301,variable
+scm_cca,output,coupling,t,GtC,state,"Cumulative total CO2 emissions since 1850, up to the previous step",,,
+scm_D_AERh,output,coupling,t,Tg,state,Hydrophilic (solubility-weighted) aerosol burden anomaly from preindustrial,,,
+scm_D_BC,output,coupling,t,Tg BC,state,Black carbon aerosol burden anomaly from preindustrial,,,
+scm_D_CH4,output,coupling,t,ppb,state,CH4 concentration anomaly from preindustrial,,,
+scm_D_CH4_lag,output,coupling,t,ppb,state,Lagged CH4 concentration anomaly from preindustrial,,,
+scm_D_CO2,output,coupling,t,ppm,state,CO2 concentration anomaly from 284 ppm (preindustrial),,175,variable
+scm_D_DUST,output,coupling,t,Tg,state,Dust aerosol burden anomaly from preindustrial (always 0),,,
+scm_D_EESC,output,coupling,t,ppt,state,Equivalent effective stratospheric chlorine anomaly from preindustrial,,,
+scm_D_HALO,output,coupling,"t,halo(48)",ppt,state,Halogenated gas concentration anomalies from preindustrial,,,
+scm_D_N2O,output,coupling,t,ppb,state,N2O concentration anomaly from preindustrial,,,
+scm_D_NO3,output,coupling,t,Tg NO3,state,Nitrate aerosol burden anomaly from preindustrial,,,
+scm_D_O3s,output,coupling,t,DU,state,Stratospheric ozone column anomaly from preindustrial,,,
+scm_D_O3t,output,coupling,t,DU,state,Tropospheric ozone column anomaly from preindustrial,,,
+scm_D_POA,output,coupling,t,Tg,state,"Primary organic aerosol burden anomaly from preindustrial (as organic matter, scaled by scale_POM)",,,
+scm_D_SALT,output,coupling,t,Tg,state,Sea salt aerosol burden anomaly from preindustrial (always 0),,,
+scm_D_SO4,output,coupling,t,Tg SO4,state,Sulfate aerosol burden anomaly from preindustrial,,,
+scm_D_SOA,output,coupling,t,Tg,state,Secondary organic aerosol burden anomaly from preindustrial,,,
+scm_D_sst,output,coupling,t,K,state,Sea surface temperature anomaly from DOECLIM (driver of the ocean carbon cycle),,,
+scm_D_tatm,output,coupling,t,K,state,Global surface air temperature anomaly from DOECLIM (driver of chemistry),,,
+scm_delsst,output,coupling,t,K,state,Sea surface temperature anomaly linearly extrapolated from the two previous steps (2*sst(n-1) - sst(n-2); 0 for the first two steps); diagnostic only,,,
+scm_deltem,output,coupling,t,K,state,Surface air temperature anomaly extrapolated from the two previous steps (2*tatm(n-1) - tatm(n-2)); drives the land temperature feedbacks,,,
+scm_emeth,output,coupling,t,GtC/step,per_step,"CO2 from oxidation of fossil CH4, added to the atmospheric carbon pool at the next step",,,
+scm_ftot,output,coupling,t,W/m2,state,Total effective radiative forcing driving DOECLIM,,,
+scm_ocn_surface_cpool,output,coupling,t,GtC,state,Ocean surface (mixed-layer) carbon pool of the selected ocean model,,253,variable
+scm_ocn_total_cpool,output,coupling,t,GtC,state,Total ocean carbon pool from the selected ocean model,,254,variable
+scm_sst,output,coupling,t,K,state,Sea surface temperature anomaly,,174,variable
+scm_tatm,output,coupling,t,K,state,Global surface air temperature anomaly,,173,variable
+scm_terrest_pool,output,coupling,t,GtC,state,Total land carbon pool (plant + detritus + soil),,252,variable
