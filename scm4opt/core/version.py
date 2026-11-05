@@ -11,7 +11,7 @@ RCMIP_FILE_PREFIX    file-name prefix of the RCMIP3 files (member and ensemble f
                      --skip-done and the analysis scripts find the files of both
 """
 
-__version__ = "4.1.0.dev0"
+__version__ = "4.1.0"
 RCMIP_CLIMATE_MODEL = "SCM4OPT(PY)v4.0"
 RCMIP_FILE_PREFIX = "SCM4OPTv40_rcmip_phase3_"
 

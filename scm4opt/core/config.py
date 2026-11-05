@@ -153,19 +153,46 @@ class RunConfig:
     load_NOAA: bool = False    # --load_NOAA: overwrite prescribed CO2/CH4/N2O/SF6 with NOAA data
     fix_conc: bool = False     # --fix_conc (contrib): CO2 concentration prescribed from
                                # dat/contrib/<hsrc>_<psrc>/conc/<psce>_WORLD.csv
+    co2_conc_initial: float | None = None  # --co2_conc_initial=<ppm> (former --co2_conc_1850):
+                               # CO2 of the atmospheric pool at the first step (default 284, or
+                               # 278.00745 with --first_year=1750); e.g. the prescribed first-year
+                               # value, to rerun compatible emissions (scm_eind_co2_compat) exactly
+    lnd_fb_1850: str | None = None  # --first_year=1750: fert (default) starts the CO2 fertilisation
+                               # in 1850, relative to the simulated 1850 CO2; both also starts the
+                               # land temperature feedbacks in 1850; none applies them from 1750
+    norgrwth_pre1850: str | None = None  # --first_year=1750: non-regrowing fraction of the land-use
+                               # emissions before 1850 (default 1: no regrowth legacy of the
+                               # 1750-1849 land use, as in the 1850 start); none = the model's
+                               # fraction for all years
     fol: str | None = None     # --fol: forcing-data folder for --scen=contrib_rfc
     case: str | None = None    # --case: ensemble member of the contrib_rfc forcing data
     minus_rfc: str | None = None  # --minus_rfc=rfc_X: scale component X by (1-fraction) over tmargin
     fraction: float | None = None # --fraction: cnb_fraction (default 0.001)
+    minus_ems: bool = False    # --minus_ems (contrib): reduce the --rdc_ems emissions over tmargin
+    rdc_ems: str | None = None # --rdc_ems=<column>: co2i, co2l, co2n (taken from co2i), ch4, bc,
+                               # ..., or a halogen; a column absent from the inputs stays 0
+    rdc_mix: bool = False      # --rdc_mix: reduce <rdc_ems>i by fraction * (<rdc_ems>i + <rdc_ems>l)
+    use_cm: bool = False       # --use_cm (contrib): Carbon Monitor CO2 (co2i) 2019-2025, the other
+                               # emissions after 2022.833 held at their 2018-2022.833 mean to 2025
+    reduce_after_cm: bool = False  # --reduce_after_cm: --minus_ems reduces the emissions after
+                               # --use_cm (reference: before, so the Carbon Monitor values replace
+                               # the reduced co2i of 2019-2025 and the reduction enters the means);
+                               # also set by --ref_compat=0
     rout3: str | None = None   # --rout3=<dir>: output folder of the report (report.py)
+    cout5: str | None = None   # --cout5=<dir>: contribution report (report.py, write_cout5_csv)
     ctag: str = "all"          # --ctag: tag in the report file name <rname>_<case>_<ctag>
     climate_model: str | None = None  # --climate_model: climate_model of the RCMIP3 rows
                                       # (default version.RCMIP_CLIMATE_MODEL)
     ref_compat: bool = True    # --ref_compat=0: corrected behaviour instead of the deliberate
                                # quirks kept for the SCM4OPT v4.1 reference results (README: Reference compatibility)
     rcmip_csv: bool = True     # with --rout3, also write the RCMIP3 template CSV
+    rcmip_compat_ems: bool = False  # --rcmip_compat_ems=1: where CO2 is prescribed, the RCMIP3
+                               # rows Emissions|CO2 and Emissions|CO2|Fossil and Industry hold
+                               # the compatible emissions (scm_ems_co2_compat, scm_eind_co2_compat)
+                               # instead of the scenario's input emissions
     report_csv: bool = True    # with --rout3, write the per-step report CSV (~27 MB per run)
-    first_year: int = 1850
+    first_year: int = 1850     # --first_year=1750 (--scen=rcmip3): extended run from 1750 with the
+                               # "_1750" inputs (anomalies from 1750) and 1750 reference values
     last_year: int = 2100      # end of the --scen=contrib horizon
     chem: ChemOptions = field(default_factory=ChemOptions)
     ocean: OceanOptions = field(default_factory=OceanOptions)
@@ -188,13 +215,37 @@ RCMIP3_FORCED = dict(psce="SSP2_45", lcov="LUH", hsrc="CEDS", psrc="IAMC", land=
 def resolve(cfg):
     """The effective configuration: the rcmip3 overrides and time horizons."""
     import dataclasses
+    check_first_year(cfg)
+    y1750 = cfg.first_year == 1750      # defaults of the 1750-only land options
+    cfg = dataclasses.replace(
+        cfg, lnd_fb_1850=cfg.lnd_fb_1850 or ("fert" if y1750 else "none"),
+        norgrwth_pre1850=cfg.norgrwth_pre1850 or ("1" if y1750 else "none"))
     if cfg.scen != "rcmip3":
         return cfg
     if not cfg.rname:
         raise ValueError("--scen=rcmip3 needs --rname")
     from ..scenarios.rcmip3_data import DEFAULT_LAST_YEAR, LAST_YEAR_BY_RNAME
-    return dataclasses.replace(cfg, **RCMIP3_FORCED, first_year=1850,
+    return dataclasses.replace(cfg, **RCMIP3_FORCED,
                                last_year=LAST_YEAR_BY_RNAME.get(cfg.rname, DEFAULT_LAST_YEAR))
+
+
+def check_first_year(cfg):
+    """--first_year: 1850, or 1750 with --scen=rcmip3; the 1750-only options need 1750."""
+    if cfg.first_year not in (1850, 1750):
+        raise ValueError(f"--first_year={cfg.first_year}: use 1850 or 1750")
+    if cfg.first_year == 1750 and cfg.scen != "rcmip3":
+        raise ValueError("--first_year=1750 is only available with --scen=rcmip3")
+    if cfg.first_year != 1750:
+        for name in ("lnd_fb_1850", "norgrwth_pre1850"):
+            if getattr(cfg, name) not in (None, "none"):
+                raise ValueError(f"--{name} is only available with --first_year=1750")
+    if cfg.lnd_fb_1850 not in (None, "none", "fert", "both"):
+        raise ValueError(f"--lnd_fb_1850={cfg.lnd_fb_1850!r}: use fert, both or none")
+
+
+def rcmip_sfx(cfg):
+    """Suffix of the RCMIP3 input files: "" (1850 start) or "_1750" (--first_year=1750)."""
+    return "_1750" if cfg.first_year == 1750 else ""
 
 
 def config_from_flags(flags):
@@ -208,6 +259,8 @@ def config_from_flags(flags):
         if not flag.startswith("--") or "=" not in flag:
             sys.exit(f"bad flag {flag!r}; use --name=value")
         name, value = flag[2:].split("=", 1)
+        if name == "co2_conc_1850":     # former name
+            name = "co2_conc_initial"
         if name in chem_names:
             chem[name] = value
         elif name in forcing_names:
@@ -223,13 +276,15 @@ def config_from_flags(flags):
         elif name in run_names:
             if name in ("first_year", "last_year", "tyear", "byear", "dyear"):
                 value = int(value)
-            elif name in ("clim_sensi", "fraction"):
+            elif name in ("clim_sensi", "fraction", "co2_conc_initial"):
                 value = float(value)
             elif name == "dat_dir":
                 from pathlib import Path
                 value = Path(value)
             elif name in ("use_ncycle", "tproj", "thist", "zero_nature", "use_ssp534", "co2_only",
                           "load_AGAGE", "load_NOAA", "fix_conc", "rcmip_csv", "report_csv",
+                          "rcmip_compat_ems",
+                          "minus_ems", "rdc_mix", "use_cm", "reduce_after_cm",
                           "ref_compat",
                           ):
                 value = value not in ("0", "")

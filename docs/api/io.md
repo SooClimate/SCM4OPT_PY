@@ -96,7 +96,9 @@ Table files: read_csv_table / read_input; single series: read_input_series.
 --scen=rcmip3: emissions from data/RCMIP3/<rname>.csv, time horizon per --rname,
 no land-use CO2 override; with --load_conc the prescribed concentrations
 (rcmip_conc) of data/RCMIP3/<rname>_conc.csv, optionally overwritten by AGAGE /
-NOAA observations.
+NOAA observations. --first_year=1750: the "_1750" files (<rname>_1750.csv,
+<rname>_conc_1750.csv, anomalies from 1750, and the natural forcing
+nat/*_rcmip3_<grp>_bimon_1750.csv).
 
 --fix_conc (contrib): prescribed CO2 concentration from
 data/contrib/<hsrc>_<psrc>/conc/<psce>_WORLD.csv.
@@ -106,13 +108,14 @@ data/contrib/<hsrc>_<psrc>/<fol>/rfc_<X>/..._all.csv for one ensemble --case; no
 emissions are needed.
 
 Also: the marginal-analysis period tmargin, the natural forcing adjustments
-(--scen=tcre/tcre2, --rdc_rfc, --zero_nature) and the land-cover overrides
-(--rdc_lcc).
+(--scen=tcre/tcre2, --rdc_rfc, --zero_nature), the land-cover overrides
+(--rdc_lcc) and, for --scen=contrib, the emission reduction over tmargin
+(--minus_ems --rdc_ems [--rdc_mix] [--fraction]) and the Carbon Monitor CO2 of
+CMonitor/CMonitor_bimon.csv (--use_cm).
 
 Not supported (raise or are ignored): psrc=INDC emissions, the ssp1..ssp5
-land-cover files, and the contrib options --use_cm, --scmv2, --minus_ems,
---rdc_ems, --fraction and --fix_conc, none of which are set in the contrib
-reference run.
+land-cover files, and the contrib options --scmv2, --minus_roe and --minus_co2
+(regional and sectoral reductions).
 ```
 
 ### class `TimeAxis`
@@ -193,6 +196,20 @@ absent.
 
 dat_eind, dat_elnd, dat_ems and dat_ems_1850.
 
+### `reduce_emissions(cfg, t, sce)`
+
+--minus_ems: reduce the --rdc_ems column of the scenario emissions (in place) by the
+marginal fraction over tmargin.
+
+  --rdc_mix         <x>i -= (<x>i + <x>l) * fraction   (industrial and land-use together)
+  --rdc_ems=co2n    co2i -= co2n * fraction            (co2n is part of co2i)
+  otherwise         <x>  *= 1 - fraction
+A column absent from the inputs is zero, and stays so.
+
+### `apply_carbon_monitor(cfg, t, sce)`
+
+--use_cm: recent emissions (in place) from Carbon Monitor (CO2) and recent means.
+
 ### `tmargin_mask(cfg, t)`
 
 tmargin(t), the marginal-analysis period.
@@ -222,7 +239,7 @@ Forcing components for --scen=contrib_rfc.
 
 Load every exogenous input of the forward model for one run configuration.
 
-Constants: `DT`, `GAS`, `GAS_NONF`, `HALO`, `HALO_RCMIP_AGAGE`, `LAND_TYPE`, `REGION_11`, `RFC_COMPONENTS`
+Constants: `AVG_MAX`, `CM_FIRST`, `CO2_AVG`, `CO2_MAX`, `DT`, `GAS`, `GAS_NONF`, `HALO`, `HALO_RCMIP_AGAGE`, `LAND_TYPE`, `OGHG_AVG`, `OGHG_MAX`, `REGION_11`, `RFC_COMPONENTS`
 
 
 ## `scm4opt.io.rcmip_export`
@@ -259,7 +276,9 @@ Options (also with "-" instead of "_"):
   --csv_dir DIR     folder holding rcmip_<sce>/ (default: $mdl_dir, else as ensemble.py)
   --out_dir DIR     output folder (default: <csv_dir>/rcmip3_ens<run_suffix>)
   --out_csv FILE    output file, with a single --sce only
-  --run_suffix S    folder suffix of the runs, e.g. _hector (rcmip_<sce>_hector/)
+  --run_suffix S    folder suffix of the runs, e.g. _hector (rcmip_<sce>_hector/), _1750
+  --first_year Y    --src report: 1750 for --first_year=1750 runs (1750 concentration
+                    offsets; default: 1750 if --run_suffix contains _1750)
   --src member|report
   --climate_model NAME  climate_model of the rows (default SCM4OPT(PY)v4.0, version.py;
                     "keep" keeps the members' value). Members written before the rename
@@ -314,6 +333,8 @@ its ensemble member:
                                   as rfc_HFC become rfc_HFC.<gas> columns)
   write_rcmip_csv(...)            the RCMIP3 template rows for this
                                   ensemble member (output_mapping.csv + template xlsx)
+  write_cout5_csv(...)            --cout5=<dir>: the contribution report (COUT5_SYMBOLS),
+                                  <dir>/<rgn>/COMB_<psrc>_<psce>_<ems>_<csec>_<case>_<ctag>.csv
 
 REPORT_SYMBOLS lists the report symbols in the reference report order and
 REPORT_PARAMETERS the reported parameters, both generated from the variable registry
@@ -343,9 +364,21 @@ The report as a DataFrame: index t labels, one column per (flattened) symbol.
 Write <rout3>/<rname>_<case>_<ctag>.csv (rout3: a folder, with or without a trailing
 "/"); returns the path.
 
-### `load_output_mapping(path=None, ref_compat=True)`
+### `cout5_path(cfg)`
+
+<cout5>/<rgn>/COMB_<psrc>_<psce>_<ems>_<csec>_<case>_<ctag>.csv
+
+### `write_cout5_csv(out, rep, inp)`
+
+Write the contribution report (one row per model step); returns the path.
+
+### `load_output_mapping(path=None, ref_compat=True, first_year=1850)`
 
 output_mapping.csv rows with rpt_out == 1 (the reported outputs).
+
+first_year : 1750 (--first_year=1750): the concentration offsets rpt_var0 of the gases
+             in conc_mapping_1750.csv are replaced by their 1750 values (the reference
+             concentrations of the model's anomalies in that mode).
 
 ref_compat : the export of the reference submission files. False: the variables of
              varregistry.KNOWN_RCMIP_ISSUES (ocean heat content and uptake) get the
@@ -376,5 +409,5 @@ The mapping defaults to load_output_mapping(ref_compat=--ref_compat).
 
 Write SCM4OPTv40_rcmip_phase3_<scenario>_<case>.csv in out_dir; returns the path.
 
-Constants: `CO2_GTC_TO_MT`, `DAT_DIR`, `DT`, `HALO`, `HALO_HFC`, `HALO_ODS`, `HALO_PFC`, `KNOWN_RCMIP_ISSUES`, `NCYCLE_SYMBOLS`, `PER_STEP_COMPAT`, `RCMIP_CLIMATE_MODEL`, `RCMIP_FILE_PREFIX`, `REPORT_PARAMETERS`, `REPORT_SYMBOLS`, `SCENARIOMIP_CONC`
+Constants: `CO2_GTC_TO_MT`, `COMPAT_EMS_ROWS`, `COUT5_SYMBOLS`, `DAT_DIR`, `DT`, `HALO`, `HALO_HFC`, `HALO_ODS`, `HALO_PFC`, `KNOWN_RCMIP_ISSUES`, `LAND_TYPE`, `NCYCLE_SYMBOLS`, `PER_STEP_COMPAT`, `RCMIP_CLIMATE_MODEL`, `RCMIP_FILE_PREFIX`, `REGION_11`, `REPORT_PARAMETERS`, `REPORT_SYMBOLS`, `SCENARIOMIP_CONC`
 

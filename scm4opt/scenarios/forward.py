@@ -18,6 +18,8 @@ Usage (from the directory that contains scm4opt/):
 with --flag=value options: the fields of config.RunConfig and its option classes
 (e.g. --psce=SSP1_19 --cm6mdl=MIROC6; full list in docs/options.md of the repository).
 --rout3 writes the model report (report.py) as <dir>/<rname>_<case>_<ctag>.csv
+--cout5=<dir> writes the contribution report as
+<dir>/<rgn>/COMB_<psrc>_<psce>_<ems>_<csec>_<case>_<ctag>.csv (report.write_cout5_csv)
 and the RCMIP3 submission rows as SCM4OPTv40_rcmip_phase3_<scenario>_<case>.csv
 
 Scenario drivers:
@@ -35,6 +37,9 @@ Examples:
   python3 -m scm4opt --scen=contrib --psce=SSP1_19 --cm6mdl=MIROC6 --rout3=out/
   # --fix_conc=1 needs data/contrib/<hsrc>_<psrc>/conc/<psce>_WORLD.csv
   python3 -m scm4opt --scen=contrib --psce=SSP1_19 --fix_conc=1
+  # contribution of 0.1 % of the 2020 BC emissions (industrial + land use), Carbon Monitor CO2
+  python3 -m scm4opt --scen=contrib --use_cm=1 --minus_ems=1 --rdc_ems=bc \\
+      --rdc_mix=1 --tyear=2020 --ems=bc --ctag=minus_ems --cout5=out/
 
   # contrib_rfc (forcing data in <fol>/rfc_<X>/..._all.csv, one ensemble member)
   python3 -m scm4opt --scen=contrib_rfc --fol=<folder> --case=000000
@@ -66,16 +71,17 @@ from dataclasses import fields
 
 import numpy as np
 
-from ..physics.atmosphere import AtmosphereDrivers, atmosphere_step, load_atmosphere_params
+from ..physics.atmosphere import (AtmosphereDrivers, atmosphere_step, compatible_emissions,
+                         load_atmosphere_params)
 from ..physics.chemistry import (GWP_SUMS, ChemDrivers, ChemFinishDrivers, ChemStep, chemistry_finish,
                         chemistry_step, gwp_sums, load_chem_params)
 from ..core.config import RunConfig
-from ..core.constants import CO2_CONC_1850, PPM2GTC
+from ..core.constants import PPM2GTC
 from ..physics.doeclim import (DoeclimDrivers, DoeclimStep, delsst, doeclim_step, glue, load_doeclim_params,
                       scm_ftot)
 from ..physics.forcing import ForcingDrivers, ForcingStep, forcing_from_data, forcing_step, load_forcing_params
 from ..io.inputs import load_inputs
-from ..physics.land import LandDrivers, LandRates, deltem, land_step, load_land_params
+from ..physics.land import LandRates, Start1850, deltem, land_step, load_land_params
 from ..physics.ocean_models import OceanDrivers, get_ocean_model
 from ..core.errors import ModelBoundsError
 from ..core.version import __version__
@@ -123,6 +129,7 @@ def run(cfg=None, inp=None):
     scm = {k: np.zeros(N) for k in ("atmo_pool", "atmoCO2", "D_CO2", "tatm", "sst", "deltem",
                                     "delsst", "cca", "ftot")}
     chem = land = ocean = None
+    s1850 = Start1850(pl, inp.t.index("1850") if cfg.first_year == 1750 else None)
     for n in range(N):
         # 1. atmosphere (scm_ATMOEQ, scm_ATMOCO2EQ, scm_D_CO2_EQ)
         if cfg.load_conc == "all":      # CO2 prescribed
@@ -169,7 +176,7 @@ def run(cfg=None, inp=None):
         # 6. land (scm_DELTEMEQ: from scm_tatm at n-1 and n-2)
         scm["deltem"][n] = deltem(scm["tatm"][n - 1] if n else 0.0,
                                   scm["tatm"][n - 2] if n > 1 else 0.0, n)
-        land = land_step(pl, land, LandDrivers(co2, scm["deltem"][n], inp.elnd[n, ico2]))
+        land = land_step(pl, land, s1850.drivers(n, co2, scm["deltem"][n], inp.elnd[n, ico2]))
 
         # 7. ocean (the selected plug-in uses the drivers it needs)
         ocean = om.step(po, ocean, OceanDrivers(co2=co2, d_co2=d_co2, tatm=g["scm_tatm"],
@@ -179,7 +186,13 @@ def run(cfg=None, inp=None):
                      ("ocean", ocean)):
             rec[k].append(v)
 
-    return _collect(rec, scm, pc, om)
+    out = _collect(rec, scm, pc, om)
+    if cfg.load_conc == "all" or cfg.fix_conc:     # CO2 prescribed: compatible emissions
+        out["scm_eind_co2_compat"] = compatible_emissions(
+            out["scm_atmoCO2"] * PPM2GTC, out["scm_emeth"], out["scm_atmoSeaFlux"],
+            out["scm_atmoLndFlux"])
+        out["scm_ems_co2_compat"] = out["scm_eind_co2_compat"] + inp.elnd[:, ico2]
+    return out
 
 
 def run_rfc(cfg, inp):
@@ -268,10 +281,17 @@ def main(argv):
             raise ValueError("--rout3 needs the full model; contrib_rfc has no carbon cycle")
         for path in write_report(out, inp):
             print(f"  wrote {path}")
+    if cfg.cout5:
+        if cfg.scen == "contrib_rfc":
+            raise ValueError("--cout5 needs the full model; contrib_rfc has no carbon cycle")
+        from ..io.report import build_report, write_cout5_csv
+        rep = build_report(out, inp, load_doeclim_params(cfg, t.n))
+        print(f"  wrote {write_cout5_csv(out, rep, inp)}")
     label = f"rname={cfg.rname} load_conc={cfg.load_conc}" if cfg.scen == "rcmip3" else f"psce={cfg.psce}"
     print(f"SCM4OPT Python {__version__}: scen={cfg.scen} {label} cm6mdl={cfg.cm6mdl} "
           f"steps={t.n} ({t.labels[0]}-{t.labels[-1]})")
-    for y in dict.fromkeys(("1850", "1900", "2000", "2020", "2050", "2100", "2300", "2500", t.labels[-1])):
+    for y in dict.fromkeys((t.labels[0], "1850", "1900", "2000", "2020", "2050", "2100", "2300", "2500",
+                            t.labels[-1])):
         if y in t.labels:
             i = t.index(y)
             co2 = (f"CO2 {out['scm_atmoCO2'][i]:8.3f} ppm  " if "scm_atmoCO2" in out else "")

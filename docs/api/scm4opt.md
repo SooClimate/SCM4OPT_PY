@@ -56,7 +56,9 @@ Directories (environment values are honoured when already set):
   tmp_dir  member list + parallel job log, default ${mdl_dir}exe/<rname>/
 With --ocean_model=hector (ocean_hector.py instead of the OSCAR ocean) the defaults get a
 _hector suffix (rcmip_<rname>_hector/, exe/<rname>_hector/), so the two ensembles do not
-overwrite each other (same file names inside).
+overwrite each other (same file names inside). With --first_year=1750 among the model
+flags the defaults get a _1750 suffix in the same way (rcmip_<rname>_1750/), and the
+inputs are the "_1750" files.
 ```
 
 ### `parse_cases(spec, n)`

@@ -19,7 +19,7 @@ Default form of scm_ATMOEQ:
                          + scm_emeth(t-1)
                          - scm_atmoSeaFlux(t-1)
                          - scm_atmoLndFlux(t-1) )$(not tfirst(t))
-                       + (co2_conc_1850 * PPM2GTC)$tfirst(t);
+                       + (co2_conc_initial * PPM2GTC)$tfirst(t);
 
 All pools are in GtC and all fluxes in GtC per model time step (the model
 runs at 1/6-year steps; the series are used as-is, no rescaling).
@@ -31,7 +31,7 @@ module (deforestation fluxes in lnd_atmoLndFlux, land.py).
 
 Atmosphere parameters.
 
-Fields: `pool_1850`
+Fields: `pool_initial`
 
 ### class `AtmosphereDrivers`
 
@@ -41,18 +41,19 @@ Fields: `eind_co2`, `emeth_prev`, `sea_flux_prev`, `lnd_flux_prev`
 
 ### `load_atmosphere_params(cfg=None)`
 
-Atmosphere parameters of a run configuration.
+Atmosphere parameters of a run configuration: the pool starts at co2_conc_initial,
+284 ppm (1850 start) or 278.00745 ppm (--first_year=1750); --co2_conc_initial overrides it.
 
 ### `atmosphere_step(p, prev, drivers)`
 
 scm_ATMOEQ for step t: the atmospheric carbon pool [GtC].
 
-prev    : scm_atmo_pool(t-1), or None at the first step (-> p.pool_1850)
+prev    : scm_atmo_pool(t-1), or None at the first step (-> p.pool_initial)
 drivers : AtmosphereDrivers (ignored at the first step)
 
-### `atmo_pool_series(eind_co2, emeth, sea_flux, lnd_flux, co2_conc_1850=284.0, ppm2gtc=2.123)`
+### `atmo_pool_series(eind_co2, emeth, sea_flux, lnd_flux, co2_conc_initial=284.0, ppm2gtc=2.123)`
 
-scm_ATMOEQ over the whole time axis t = 0 (tfirst = 1850) .. n-1.
+scm_ATMOEQ over the whole time axis t = 0 (tfirst) .. n-1.
 
 Inputs are 1-D arrays of equal length indexed by t. Returns scm_atmo_pool(t).
 In the coupled model the ocean/land fluxes depend on the pool itself, so a
@@ -60,7 +61,20 @@ full model run has to call atmosphere_step inside the main time loop; this
 helper is for the case where the flux series are already known (e.g. from
 saved model output).
 
-Constants: `CO2_CONC_1850`, `PPM2GTC`
+### `compatible_emissions(atmo_pool, emeth, sea_flux, lnd_flux)`
+
+Compatible fossil and industrial CO2 emissions: scm_ATMOEQ solved for
+dat_eind(t,"co2") given the pool (atmo_pool_series run backwards).
+
+    eind(t) = pool(t) - pool(t-1) - emeth(t-1) + sea_flux(t-1) + lnd_flux(t-1)
+
+With CO2 prescribed (--load_conc=all) the land and ocean fluxes are driven by the
+prescribed concentration, so this is exact: an emission-driven run with these
+emissions (and --co2_conc_initial set to the prescribed first-year value) reproduces the
+concentrations. Land-use emissions are not included (they enter through lnd_flux).
+The first step has no balance and is 0. All in GtC per step.
+
+Constants: `CO2_CONC_1750`, `CO2_CONC_INITIAL`, `PPM2GTC`
 
 
 ## `scm4opt.physics.chemistry`
@@ -110,6 +124,10 @@ Fields: `ems_row`, `ems_1850`, `gi`, `halo_idx`, `tatm_prev`, `prescribed`
 Inputs of the second part of a chemistry step n (chemistry_finish).
 
 Fields: `ems_row`, `gi`, `tatm`
+
+### `baselines(ch4rfc='etminan', first_year=1850)`
+
+Reference and initial concentrations of a CH4 forcing pattern and first year.
 
 ### `load_chem_params(cfg=None)`
 
@@ -176,7 +194,7 @@ Run chemistry offline over a prescribed scm_D_tatm series.
 conc : inputs.PrescribedConc for --load_conc, or None.
 Returns {variable name without the chm_ prefix: array}; HALO variables are (N, 48).
 
-Constants: `ALPHA_POM_PARAM`, `BASELINES`, `BC_PARAM`, `CH4_FOSSFUELFRACTION`, `CH4_OXIDATION_COEFF`, `CHI_O3S2_PARAM`, `CHI_O3S_RFEF`, `CHI_O3T_RFEF`, `CHM_GAMMA_AGE`, `CHM_GAMMA_O3T`, `DT`, `DUST_PARAM`, `EESC_HV`, `EESC_HV0`, `FHALO`, `FRACREL`, `GWP_SUMS`, `HALO`, `HALO_CFC`, `HALO_HFC`, `HALO_ODS`, `HALO_PFC`, `HALO_TABLE`, `HVSNK_SENS`, `INF`, `MHALO`, `NO3_PARAM`, `OHSNK_OZ_SENS`, `OHSNK_SENS`, `POA_PARAM`, `SALT_PARAM`, `SCALE_O3T`, `SO4_PARAM`, `SOA_PARAM`, `SOLUB_PARAM`, `TAU_CH4_OH0`, `TAU_N2O_HV`
+Constants: `ALPHA_POM_PARAM`, `BASELINES`, `BASELINE_1750`, `BC_PARAM`, `CH4_CONC_1750`, `CH4_FOSSFUELFRACTION`, `CH4_OXIDATION_COEFF`, `CHI_O3S2_PARAM`, `CHI_O3S_RFEF`, `CHI_O3T_RFEF`, `CHM_GAMMA_AGE`, `CHM_GAMMA_O3T`, `CO2_CONC_1750`, `DT`, `DUST_PARAM`, `EESC_HV`, `EESC_HV0`, `FHALO`, `FRACREL`, `GWP_SUMS`, `HALO`, `HALO_CFC`, `HALO_HFC`, `HALO_ODS`, `HALO_PFC`, `HALO_TABLE`, `HVSNK_SENS`, `INF`, `MHALO`, `N2O_CONC_1750`, `NO3_PARAM`, `OHSNK_OZ_SENS`, `OHSNK_SENS`, `POA_PARAM`, `SALT_PARAM`, `SCALE_O3T`, `SO4_PARAM`, `SOA_PARAM`, `SOLUB_PARAM`, `TAU_CH4_OH0`, `TAU_N2O_HV`
 
 
 ## `scm4opt.physics.doeclim`
@@ -364,7 +382,7 @@ Run forcing offline over prescribed series.
 chem : {name: array} with the fields listed in forcing_step (D_HALO is (N, 48)).
 Returns {variable name: array}.
 
-Constants: `AERH_SCALE`, `AER_EFRF`, `ALBBCRF_RFEF`, `ALBBCWARM_RFEF`, `ALBLCWARM_RFEF`, `ALPHA_LCC_PARAM`, `ALPHA_LCC_REG_PARAM`, `BASELINES`, `BCADJUST_RFEF`, `BC_RFEF`, `CLOUD_EFRF`, `CLOUD_SCALE`, `DT`, `FHALO`, `HALO`, `HALO_CFC`, `HALO_HFC`, `HALO_ODS`, `HALO_PFC`, `LAND_TYPE`, `LOG_CO2_RNAMES`, `MHALO`, `NO3_RFEF`, `O3S_RFEF`, `O3T_RFEF`, `POA_RFEF`, `PRECRADFACT_RFEF`, `RADEFF_DUST`, `RADEFF_HALO`, `RADEFF_SALT`, `REGION_11`, `RFC_F2X`, `RF_EFFICACY`, `SO4_RFEF`, `SOA_RFEF`, `WARMEFF_VOLC`
+Constants: `AERH_SCALE`, `AER_EFRF`, `ALBBCRF_RFEF`, `ALBBCWARM_RFEF`, `ALBLCWARM_RFEF`, `ALPHA_LCC_PARAM`, `ALPHA_LCC_REG_PARAM`, `BCADJUST_RFEF`, `BC_RFEF`, `CLOUD_EFRF`, `CLOUD_SCALE`, `DT`, `FHALO`, `HALO`, `HALO_CFC`, `HALO_HFC`, `HALO_ODS`, `HALO_PFC`, `LAND_TYPE`, `LOG_CO2_RNAMES`, `MHALO`, `NO3_RFEF`, `O3S_RFEF`, `O3T_RFEF`, `POA_RFEF`, `PRECRADFACT_RFEF`, `RADEFF_DUST`, `RADEFF_HALO`, `RADEFF_SALT`, `REGION_11`, `RFC_F2X`, `RF_EFFICACY`, `SO4_RFEF`, `SOA_RFEF`, `WARMEFF_VOLC`
 
 
 ## `scm4opt.physics.forcing_data`
@@ -439,6 +457,15 @@ Options (--name=value flags):
   --scen=tcre / tcre2     derived values recomputed from the raw parameters
   --rname=abrupt-0p5xCO2  sigmoid-only CO2 fertilisation
   --use_ncycle            NPP x nit_npp_scaler(t): LandDrivers.npp_scaler of land_step
+  --first_year=1750       fertilisation reference 278.00745 ppm (the 1750 CO2), and
+    --lnd_fb_1850=fert    (default) CO2 fertilisation from 1850, relative to the simulated
+                          1850 CO2, as in the 1850 start (calibrated to CMIP6 ESMs that are in
+                          equilibrium in 1850); both: also the temperature feedbacks from 1850,
+                          relative to the 1850 deltem; none: both from 1750
+    --norgrwth_pre1850=f  (default 1) non-regrowing fraction of the land-use emissions before
+                          1850 (no_regrowth_frac for the later ones): f = 1 drops the regrowth
+                          legacy of the 1750-1849 land use; none: no_regrowth_frac for all years
+                          The state of both along the run is kept by Start1850.
 Not included: the --cali_lnd calibration branch.
 ```
 
@@ -446,7 +473,7 @@ Not included: the --cali_lnd calibration branch.
 
 Land parameters; parameter names in RAW / DERIVED. Build with load_land_params().
 
-Fields: `npp_0_per_step`, `resp_0_per_step`, `fert_scale`, `beta`, `fert_method`, `k_npp`, `k_resp`, `k_detr`, `k_soil`, `pool_0_p`, `pool_0_h`, `pool_0_s`, `gifford_conc`, `no_regrowth_frac`, `f_npp_to_p`, `f_npp_to_h`, `f_p_to_h`, `f_defo_p`, `f_defo_h`, `f_h_to_s`, `regrow_inter_p`, `regrow_gradi_p`, `regrow_inter_h`, `regrow_gradi_h`, `regrow_inter_s`, `regrow_gradi_s`, `f_npp_to_s`, `f_p_to_s`, `f_defo_s`, `decay_0_p`, `decay_0_h`, `decay_0_s`, `fert_sigmoid_only`, `co2_ref`, `co2_npp_zero`
+Fields: `npp_0_per_step`, `resp_0_per_step`, `fert_scale`, `beta`, `fert_method`, `k_npp`, `k_resp`, `k_detr`, `k_soil`, `pool_0_p`, `pool_0_h`, `pool_0_s`, `gifford_conc`, `no_regrowth_frac`, `f_npp_to_p`, `f_npp_to_h`, `f_p_to_h`, `f_defo_p`, `f_defo_h`, `f_h_to_s`, `regrow_inter_p`, `regrow_gradi_p`, `regrow_inter_h`, `regrow_gradi_h`, `regrow_inter_s`, `regrow_gradi_s`, `f_npp_to_s`, `f_p_to_s`, `f_defo_s`, `decay_0_p`, `decay_0_h`, `decay_0_s`, `fert_sigmoid_only`, `co2_ref`, `co2_npp_zero`, `fb_1850`, `no_regrowth_frac_pre1850`
 
 ### class `LandRates`
 
@@ -458,7 +485,17 @@ Fields: `fert_log`, `fert_r`, `fert_b`, `fert_sig`, `fert_fact`, `fg`, `fr`, `fh
 
 Inputs of one land step n.
 
-Fields: `co2`, `deltem`, `elnd_co2`, `npp_scaler`
+Fields: `co2`, `deltem`, `elnd_co2`, `npp_scaler`, `fert_ref`, `fert_off`, `elu_pre1850`
+
+### class `Start1850`
+
+--first_year=1750: the land drivers of the options --lnd_fb_1850 and
+--norgrwth_pre1850, which need the simulated 1850 state and the cumulative pre-1850
+land-use emissions. One instance per run; call drivers() for n = 0, 1, ... in order.
+
+p : LandParams; i1850 : step index of 1850 (None: an 1850 start, plain drivers).
+
+* `Start1850.drivers(self, n, co2, dtem, elnd_co2, npp_scaler=None)`: LandDrivers of step n (dtem: scm_deltem(n), unchanged in the model output).
 
 ### `magicc6_land_defaults(dat_dir=DAT_DIR)`
 
@@ -477,7 +514,7 @@ scm_deltem(n): linear extrapolation of tatm from n-1 and n-2; 0 for n < 2.
 One step of the land carbon cycle.
 
 p          : LandParams
-prev       : LandRates of step n-1, or None at the first step (1850)
+prev       : LandRates of step n-1, or None at the first step
 drivers    : LandDrivers of step n:
 co2        : scm_atmoCO2(n) [ppm]
 dtem       : scm_deltem(n) [K]
@@ -485,15 +522,16 @@ elnd_co2   : dat_elnd(n,"co2") [GtC/step]
 npp_scaler : nit_npp_scaler(n) from the N cycle (--use_ncycle), or None
 Returns the LandRates of step n; its atmoLndFlux feeds the atmosphere at n+1.
 
-### `run_land(p, co2, tatm, elnd_co2, npp_scaler=None)`
+### `run_land(p, co2, tatm, elnd_co2, npp_scaler=None, i1850=None)`
 
 Run the land module offline over prescribed series (all length N).
 
 co2 : scm_atmoCO2 [ppm]; tatm : scm_tatm [K]; elnd_co2 : dat_elnd(t,"co2");
-npp_scaler : nit_npp_scaler series (--use_ncycle) or None.
+npp_scaler : nit_npp_scaler series (--use_ncycle) or None;
+i1850 : step index of 1850 with --first_year=1750 (Start1850), else None.
 Returns {variable name without the lnd_ prefix: array}, plus "deltem".
 
-Constants: `CO2_CONC_1850`, `CO2_NPP_ZERO_CONC`, `DAT_DIR`, `DERIVED`, `DT`, `MAGICC6_LAND_CSV`, `OUTPUTS`, `RAW`, `SCM4OPT_LAND_DEFAULTS`
+Constants: `CO2_CONC_1750`, `CO2_CONC_INITIAL`, `CO2_NPP_ZERO_CONC`, `DAT_DIR`, `DERIVED`, `DT`, `MAGICC6_LAND_CSV`, `OUTPUTS`, `RAW`, `SCM4OPT_LAND_DEFAULTS`
 
 
 ## `scm4opt.physics.ocean_hector`
@@ -748,5 +786,5 @@ Run the ocean offline over prescribed scm_D_CO2 and scm_D_sst series.
 Returns {variable name without the ocn_ prefix: array}; per-box variables have
 shape (N, 8) and sub-step ones (N, nsub) or (N, 8, nsub).
 
-Constants: `ALPHA_CO2`, `ALPHA_SOL`, `CO2_0`, `DAT_DIR`, `DT`, `FT`, `INF`, `OBOX`, `PREIND_INTERDEEP_C`, `PREIND_SURFACE_C`, `P_CIRC_TBL`, `SURF_LAYER`, `TAU_CIRC_TBL`, `TBL_OSNKTRANS`
+Constants: `ALPHA_CO2`, `ALPHA_SOL`, `CO2_0`, `CO2_CONC_1750`, `DAT_DIR`, `DT`, `FT`, `INF`, `OBOX`, `PREIND_INTERDEEP_C`, `PREIND_SURFACE_C`, `P_CIRC_TBL`, `SURF_LAYER`, `TAU_CIRC_TBL`, `TBL_OSNKTRANS`
 

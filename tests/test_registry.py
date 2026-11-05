@@ -22,7 +22,7 @@ def test_known_rcmip_issues_still_present():
 
 
 def test_report_symbols():
-    assert len(REPORT_SYMBOLS) == len(set(REPORT_SYMBOLS)) == 402
+    assert len(REPORT_SYMBOLS) == len(set(REPORT_SYMBOLS)) == 404
 
 
 def test_outputs_registered():

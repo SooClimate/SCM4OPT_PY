@@ -57,4 +57,8 @@ Data
 The files in scm4opt/data/ other than scm4opt/data/MAGICC6/ are input data and parameter
 tables. The scenario inputs (RCMIP3/, contrib/, AGAGE/, NOAA/) are derived from external
 datasets (RCMIP, CEDS, LUH2, AGAGE, NOAA and others) and remain subject to the terms and
-citation requirements of those datasets.
+citation requirements of those datasets. scm4opt/data/CMonitor/ holds global fossil CO2
+emissions from Carbon Monitor (https://carbonmonitor.org; Liu, Z. et al. (2020): Carbon
+Monitor, a near-real-time daily dataset of global CO2 emission from fossil fuel and cement
+production. Sci. Data, 7, 392, https://doi.org/10.1038/s41597-020-00708-7), used with
+--use_cm, subject to the terms of that dataset.

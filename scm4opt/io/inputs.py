@@ -25,7 +25,9 @@ Table files: read_csv_table / read_input; single series: read_input_series.
 --scen=rcmip3: emissions from data/RCMIP3/<rname>.csv, time horizon per --rname,
 no land-use CO2 override; with --load_conc the prescribed concentrations
 (rcmip_conc) of data/RCMIP3/<rname>_conc.csv, optionally overwritten by AGAGE /
-NOAA observations.
+NOAA observations. --first_year=1750: the "_1750" files (<rname>_1750.csv,
+<rname>_conc_1750.csv, anomalies from 1750, and the natural forcing
+nat/*_rcmip3_<grp>_bimon_1750.csv).
 
 --fix_conc (contrib): prescribed CO2 concentration from
 data/contrib/<hsrc>_<psrc>/conc/<psce>_WORLD.csv.
@@ -35,13 +37,14 @@ data/contrib/<hsrc>_<psrc>/<fol>/rfc_<X>/..._all.csv for one ensemble --case; no
 emissions are needed.
 
 Also: the marginal-analysis period tmargin, the natural forcing adjustments
-(--scen=tcre/tcre2, --rdc_rfc, --zero_nature) and the land-cover overrides
-(--rdc_lcc).
+(--scen=tcre/tcre2, --rdc_rfc, --zero_nature), the land-cover overrides
+(--rdc_lcc) and, for --scen=contrib, the emission reduction over tmargin
+(--minus_ems --rdc_ems [--rdc_mix] [--fraction]) and the Carbon Monitor CO2 of
+CMonitor/CMonitor_bimon.csv (--use_cm).
 
 Not supported (raise or are ignored): psrc=INDC emissions, the ssp1..ssp5
-land-cover files, and the contrib options --use_cm, --scmv2, --minus_ems,
---rdc_ems, --fraction and --fix_conc, none of which are set in the contrib
-reference run.
+land-cover files, and the contrib options --scmv2, --minus_roe and --minus_co2
+(regional and sectoral reductions).
 """
 
 from dataclasses import dataclass, field
@@ -51,7 +54,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from ..core.config import RunConfig, data_path, nat_grp_of, resolve
+from ..core.config import RunConfig, data_path, nat_grp_of, rcmip_sfx, resolve
 from ..core.constants import DT
 from ..core.sets import GAS, GAS_NONF, HALO, HALO_RCMIP_AGAGE, LAND_TYPE, REGION_11
 
@@ -92,7 +95,7 @@ class ScenarioInputs:
     eind: np.ndarray        # (n, gas)  dat_eind, per step
     elnd: np.ndarray        # (n, gas)  dat_elnd, per step
     ems: np.ndarray         # (n, gas)  dat_ems = eind + elnd
-    ems_1850: np.ndarray    # (gas,)    dat_ems("1850", gas)
+    ems_1850: np.ndarray    # (gas,)    dat_ems_1850(gas): dat_ems of the first step
     rf_solar: np.ndarray    # (n,)      W/m2
     rf_volc: np.ndarray     # (n,)      W/m2
     rf_con: np.ndarray      # (n,)      W/m2, contrails
@@ -224,7 +227,7 @@ def load_emissions(cfg, t):
     contrib = cfg.dat_dir / "contrib"
 
     if cfg.scen == "rcmip3":   # one file per RCMIP experiment
-        path = cfg.dat_dir / "RCMIP3" / f"{cfg.rname}.csv"
+        path = cfg.dat_dir / "RCMIP3" / f"{cfg.rname}{rcmip_sfx(cfg)}.csv"
     else:
         path = contrib / f"{cfg.hsrc}_{cfg.psrc}" / "total" / f"{cfg.psce}_WORLD.csv"
     rec = read_input(path)
@@ -235,6 +238,17 @@ def load_emissions(cfg, t):
     if cfg.land and cfg.scen not in no_luc:  # co2l from the LUC file
         sce["co2l"] = read_input_series(
             contrib / f"{cfg.land}_{cfg.psrc}" / cfg.rgn / f"CO2_EMISS_LUC_{cfg.psce}.csv", t)
+
+    if cfg.scen == "contrib":
+        # reference order: reduce, then Carbon Monitor (which overwrites co2i of 2019-2025 and
+        # averages the reduced values); --reduce_after_cm / --ref_compat=0: the reverse
+        after = cfg.reduce_after_cm or not cfg.ref_compat
+        if not after:
+            reduce_emissions(cfg, t, sce)
+        if cfg.use_cm:
+            apply_carbon_monitor(cfg, t, sce)
+        if after:
+            reduce_emissions(cfg, t, sce)
 
     n = t.n
     eind = np.zeros((n, len(GAS)))
@@ -247,8 +261,72 @@ def load_emissions(cfg, t):
         if g in GAS_NONF and f"{g}l" in sce:  # dat_elnd(t,halo) = 0
             elnd[:, j] = sce[f"{g}l"].to_numpy()
     ems = eind + elnd
-    ems_1850 = ems[t.index("1850")].copy()
+    ems_1850 = ems[0].copy()            # first year (1850, or 1750): aerosol baseline
     return eind, elnd, ems, ems_1850
+
+
+def reduce_emissions(cfg, t, sce):
+    """--minus_ems: reduce the --rdc_ems column of the scenario emissions (in place) by the
+    marginal fraction over tmargin.
+
+      --rdc_mix         <x>i -= (<x>i + <x>l) * fraction   (industrial and land-use together)
+      --rdc_ems=co2n    co2i -= co2n * fraction            (co2n is part of co2i)
+      otherwise         <x>  *= 1 - fraction
+    A column absent from the inputs is zero, and stays so.
+    """
+    if not cfg.minus_ems:
+        return
+    x = cfg.rdc_ems
+    known = set(sce.columns) | {"co2n"} | {f"{g}{k}" for g in GAS_NONF for k in "il"} | set(GAS)
+    if not x or (x not in known and not (cfg.rdc_mix and f"{x}i" in known)):
+        raise ValueError(f"--minus_ems needs --rdc_ems=<emission column>, got {x!r}")
+    f = cfg.fraction if cfg.fraction is not None else 0.001
+    tm = tmargin_mask(cfg, t)
+    zero = np.zeros(t.n)
+    if cfg.rdc_mix:
+        if f"{x}i" in sce:
+            a = sce[f"{x}i"].to_numpy(copy=True)
+            b = sce[f"{x}l"].to_numpy() if f"{x}l" in sce else zero
+            a[tm] = a[tm] - (a[tm] + b[tm]) * f
+            sce[f"{x}i"] = a
+    elif x == "co2n":
+        a = sce["co2i"].to_numpy(copy=True)
+        b = sce["co2n"].to_numpy() if "co2n" in sce else zero
+        a[tm] = a[tm] - b[tm] * f
+        sce["co2i"] = a
+    elif x in sce:
+        a = sce[x].to_numpy(copy=True)
+        a[tm] = a[tm] * (1 - f)
+        sce[x] = a
+
+
+# --use_cm: Carbon Monitor CO2 (co2i) from CM_FIRST to CO2_MAX; the averages fill the steps
+# after CO2_MAX (co2i, mean over CO2_AVG) and after OGHG_MAX (the other columns, mean over
+# OGHG_AVG) up to AVG_MAX
+CM_FIRST, CO2_MAX, OGHG_MAX, AVG_MAX = 2019, 2025, 2022.833, 2025
+CO2_AVG, OGHG_AVG = (2020, CO2_MAX), (2018, OGHG_MAX)
+
+
+def apply_carbon_monitor(cfg, t, sce):
+    """--use_cm: recent emissions (in place) from Carbon Monitor (CO2) and recent means."""
+    y = t.tval
+    cm = _read_csv_series(data_path(cfg.dat_dir, "CMonitor", "CMonitor_bimon.csv"), t)
+
+    def mean(v, lo, hi):            # sequential sum / count
+        sel = v[(y >= lo) & (y <= hi)]
+        return sum(float(x) for x in sel) / len(sel)
+
+    co2i = sce["co2i"].to_numpy(copy=True)
+    w = (y >= CM_FIRST) & (y <= CO2_MAX)
+    co2i[w] = cm[w]
+    co2i[(y > CO2_MAX) & (y <= AVG_MAX)] = mean(co2i, *CO2_AVG)
+    sce["co2i"] = co2i
+    w = (y > OGHG_MAX) & (y <= AVG_MAX)
+    for c in sce.columns:
+        if c != "co2i":
+            v = sce[c].to_numpy(copy=True)
+            v[w] = mean(v, *OGHG_AVG)
+            sce[c] = v
 
 
 def _read_csv_series(path, t):
@@ -279,8 +357,9 @@ def load_natural_forcing(cfg, t, tmargin):
     adjustments."""
     grp = nat_grp_of(cfg)
     tag = "" if grp == "default" else f"_rcmip3_{grp}"
-    solar = _read_csv_series(data_path(cfg.dat_dir, "nat", f"Solar_foricng{tag}_bimon.csv"), t)
-    volc = _read_csv_series(data_path(cfg.dat_dir, "nat", f"Volcanic_foricng{tag}_bimon.csv"), t)
+    sfx = rcmip_sfx(cfg) if tag else ""     # "_1750": the series from 1750
+    solar = _read_csv_series(data_path(cfg.dat_dir, "nat", f"Solar_foricng{tag}_bimon{sfx}.csv"), t)
+    volc = _read_csv_series(data_path(cfg.dat_dir, "nat", f"Volcanic_foricng{tag}_bimon{sfx}.csv"), t)
     con = _read_csv_series(data_path(cfg.dat_dir, "AR6", "AR6_foricng_contrails.csv"), t)
     dust = np.zeros(t.n)
     if grp == "zero":
@@ -340,7 +419,7 @@ def load_conc(cfg, t):
         raise ValueError(f"--load_conc={cfg.load_conc!r}: use all or nco2")
     from ..physics.chemistry import load_chem_params
     from ..scenarios.rcmip3_data import AGAGE_GASES, NOAA_SERIES
-    rec = read_input(cfg.dat_dir / "RCMIP3" / f"{cfg.rname}_conc.csv")
+    rec = read_input(cfg.dat_dir / "RCMIP3" / f"{cfg.rname}_conc{rcmip_sfx(cfg)}.csv")
     rec[rec.columns[1]] = rec[rec.columns[1]].str.lower()   # labels are case-insensitive
     types = ("chm_d_co2", "chm_d_ch4", "chm_d_n2o") + tuple(f"chm_d_{g}" for g in HALO)
     c = dict(zip(types, to_dense(rec, (t.labels, types)).T))

@@ -26,7 +26,7 @@ import numpy as np
 
 from ..core.config import ForcingOptions, nat_grp_of
 from ..core.constants import DT
-from .chemistry import BASELINES
+from .chemistry import baselines as _baselines
 from .forcing_data import ALPHA_LCC_PARAM, ALPHA_LCC_REG_PARAM, RADEFF_HALO
 from ..scenarios.rcmip3_data import LOG_CO2_RNAMES
 from ..core.sets import FHALO, HALO, HALO_CFC, HALO_HFC, HALO_ODS, HALO_PFC, LAND_TYPE, MHALO, REGION_11
@@ -202,7 +202,7 @@ def load_forcing_params(cfg=None, efficacy=None, baselines=None):
     baselines: CO2/CH4/N2O baseline overrides)."""
     cfg = cfg or RunConfig()
     return _forcing_params(cfg.forcing, cfg.ch4rfc, cfg.rname, nat_grp_of(cfg), efficacy,
-                           baselines)
+                           baselines or _baselines(cfg.ch4rfc, cfg.first_year))
 
 
 def _forcing_params(opts=None, ch4rfc="etminan", rname=None, nat_grp="default",
@@ -213,7 +213,7 @@ def _forcing_params(opts=None, ch4rfc="etminan", rname=None, nat_grp="default",
     baselines : optional CO2_init/CH4_0/... dict replacing chemistry's BASELINES[ch4rfc]
     """
     o = opts or ForcingOptions()
-    b = baselines or pick(BASELINES, ch4rfc, "--ch4rfc")
+    b = baselines or _baselines(ch4rfc)
     F2x_etminan = (-2.4e-7 * b["co2_init"]**2 + 7.2e-4 * b["co2_init"]
                    - 2.1e-4 * b["n2o_init"] + 5.36) * np.log(2)
     RF_ref1 = pick(CLOUD_EFRF, o.CLOUDerf_mdl, "--CLOUDerf_mdl")

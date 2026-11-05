@@ -6,7 +6,7 @@ coupled climate model: carbon cycle (land, ocean, atmosphere), atmospheric chemi
 radiative forcing and the DOECLIM energy-balance model, at a 1/6-year time step.
 It runs scenario experiments (contribution analysis, RCMIP3) and parameter ensembles.
 
-Version 4.1.0.dev0.
+Version 4.1.0.
 
 ## Documentation
 
@@ -17,6 +17,8 @@ and references generated from the code: [options](docs/options.md),
 ## Install
 
 ```bash
+pip install scm4opt         # from PyPI
+# or, from a clone of this repository:
 pip install -e .            # numpy, pandas, scipy
 pip install -e ".[test]"    # pytest
 ```
@@ -27,23 +29,28 @@ Python >= 3.10. Ensembles also need GNU parallel. All inputs and outputs are CSV
 
 The parameter tables (CMIP6 calibrations, natural forcing, RCMIP3 output mapping,
 ensemble members, ...) are in `scm4opt/data/`, tracked in git and installed with the
-package. The scenario inputs (`RCMIP3/`, `contrib/`, `AGAGE/`, `NOAA/`: emissions,
-concentrations, land cover, observations, forcing data; 7933 files) are distributed
-separately as SCM4OPT_PY_DAT, published on Zenodo:
-[doi:10.5281/zenodo.23718272](https://doi.org/10.5281/zenodo.23718272). Download it into
-a folder and point the model to that folder:
+package. This repository also holds 80 scenario input files, in
+`scm4opt/data/RCMIP3/`, `contrib/` (land cover), `AGAGE/` and `NOAA/`: those of the tests
+and of the RCMIP3 experiments
+`historical`, `esm-hist`, `esm-allGHG-hist`,
+from 1850 and, with `--first_year=1750`, from 1750. They are listed with their size and
+SHA-256 checksum in `scm4opt/data/inputs_manifest.csv` and installed with the package
+(also by `pip install scm4opt`). These runs need no other download:
 
 ```bash
-export SCM4OPT_DATA=/path/to/SCM4OPT_PY_DAT      # or --dat_dir=... per run
+scm4opt --scen=rcmip3 --rname=historical --load_conc=all --rout3=out/
+scm4opt --scen=rcmip3 --rname=esm-hist --load_conc=nco2 --first_year=1750 --rout3=out/
+scm4opt ensemble --rname=esm-allGHG-hist -j 8 --cases=0-49
 scm4opt data verify                              # files against inputs_manifest.csv
 ```
 
-Parameter tables missing in that folder are taken from `scm4opt/data/`. Copying the input
-folders into `scm4opt/data/` works as well (they are git-ignored there). `scm4opt data pack
---out DIR` writes one archive per set (`scm4opt-inputs-<set>.tar.gz`) with
-`archives_manifest.csv`; `scm4opt data fetch --source URL_OR_DIR [--data DIR]` downloads
-them, checks each archive's checksum, unpacks it and verifies the files (all sets by
-default; RCMIP3 runs also need the land cover in `contrib/`).
+The inputs of the other experiments and of the contribution runs are distributed
+separately as SCM4OPT_PY_DAT, published on Zenodo:
+[doi:10.5281/zenodo.23718272](https://doi.org/10.5281/zenodo.23718272) (from 1850 only so
+far). Download it into a folder and point the model to that folder with
+`export SCM4OPT_DATA=/path/to/SCM4OPT_PY_DAT` (or `--dat_dir=...` per run); parameter tables
+missing there are taken from `scm4opt/data/`. Further input files copied into
+`scm4opt/data/` are git-ignored.
 
 ## Run
 

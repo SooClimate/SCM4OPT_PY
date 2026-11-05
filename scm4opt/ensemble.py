@@ -29,7 +29,9 @@ Directories (environment values are honoured when already set):
   tmp_dir  member list + parallel job log, default ${mdl_dir}exe/<rname>/
 With --ocean_model=hector (ocean_hector.py instead of the OSCAR ocean) the defaults get a
 _hector suffix (rcmip_<rname>_hector/, exe/<rname>_hector/), so the two ensembles do not
-overwrite each other (same file names inside).
+overwrite each other (same file names inside). With --first_year=1750 among the model
+flags the defaults get a _1750 suffix in the same way (rcmip_<rname>_1750/), and the
+inputs are the "_1750" files.
 """
 
 import argparse
@@ -104,6 +106,8 @@ def main(argv=None):
             args.ocean_model = args.ocean_model or a.split("=", 1)[1]
             extra.remove(a)
     suffix = "_hector" if args.ocean_model == "hector" else ""
+    y1750 = "--first_year=1750" in extra       # extended runs from 1750: their own folders
+    suffix += "_1750" if y1750 else ""
     # the experiment's standard options, unless given explicitly or switched off
     std = [] if args.no_standard_options or args.scen != "rcmip3" else \
         RCMIP3_STANDARD_OPTIONS.get(args.rname, "").split()
@@ -122,7 +126,8 @@ def main(argv=None):
     # inputs of the experiment: stop early (exit code 3) if they are missing
     if args.scen == "rcmip3":
         dat = Path(next((a.split("=", 1)[1] for a in extra if a.startswith("--dat_dir=")), DAT_DIR))
-        need = [f"{args.rname}.csv"] + ([f"{args.rname}_conc.csv"]
+        sfx = "_1750" if y1750 else ""
+        need = [f"{args.rname}{sfx}.csv"] + ([f"{args.rname}_conc{sfx}.csv"]
                                         if any(o.startswith("--load_conc") for o in std + extra) else [])
         missing = [n for n in need if not data_path(dat, "RCMIP3", n).exists()]
         if missing:

@@ -5,7 +5,7 @@
 From the variable registry `scm4opt/data/registry/registry.csv`. Time basis: `state` (a level at a time point), `per_step` (amount per 1/6-year step), `per_year`, `none` (constant). Report symbols are built by `io.report` from the outputs.
 
 
-## Outputs of a run (272)
+## Outputs of a run (274)
 
 
 ### chemistry (34)
@@ -47,13 +47,15 @@ From the variable registry `scm4opt/data/registry/registry.csv`. Time basis: `st
 | `chm_D_XSNK_HALO` | t,halo(48) | kt/yr | per_year | Other-sink (ocean, soil) anomaly of each halogenated gas (mass of the gas, negative = removal), annual rate |
 | `chm_emeth` | t | GtC/step | per_step | CO2 (as C) from oxidation of fossil CH4, per step; added to CO2 emissions |
 
-### coupling (32)
+### coupling (34)
 
 | name | dims | unit | time basis | description |
 |---|---|---|---|---|
 | `scm_atmo_pool` | t | GtC | state | Atmospheric carbon pool |
 | `scm_atmoCO2` | t | ppm | state | Atmospheric CO2 concentration (pool / 2.123 GtC per ppm, or prescribed) |
 | `scm_atmoLndFlux` | t | GtC/step | per_step | Net atmosphere-to-land carbon flux (positive = uptake), per step |
+| `scm_eind_co2_compat` | t | GtC/step | per_step | Compatible fossil and industrial CO2 emissions when CO2 is prescribed (--load_conc=all or --fix_conc): the atmospheric carbon balance solved for the emissions (atmosphere.compatible_emissions), per step |
+| `scm_ems_co2_compat` | t | GtC/step | per_step | Compatible total CO2 emissions when CO2 is prescribed: scm_eind_co2_compat plus the land-use CO2 emissions, per step |
 | `scm_atmoSeaFlux` | t | GtC/step | per_step | Net atmosphere-to-ocean carbon flux (positive = uptake), per step |
 | `scm_cca` | t | GtC | state | Cumulative total CO2 emissions since 1850, up to the previous step |
 | `scm_D_AERh` | t | Tg | state | Hydrophilic (solubility-weighted) aerosol burden anomaly from preindustrial |
@@ -591,7 +593,7 @@ From the variable registry `scm4opt/data/registry/registry.csv`. Time basis: `st
 | `eco2l_accum_2017` | t | Mt CO2 | state | Cumulative land-use CO2 emissions from 2017 on (0 before 2017), as CO2 mass |
 | `inst_TCRE` | t | K/Mt CO2 | state | Instantaneous TCRE: surface air temperature anomaly divided by cumulative total CO2 emissions since 1850 (0 where cumulative emissions are 0) |
 
-## Parameters (287)
+## Parameters (289)
 
 
 ### chemistry (108)
@@ -813,7 +815,7 @@ From the variable registry `scm4opt/data/registry/registry.csv`. Time basis: `st
 | `efficacy` | efficacy(21) | 1 | none | Forcing efficacies (ERF/RF ratios) by forcing agent (CO2, CH4, N2O, ozone, aerosols, cloud albedo, solar, halogens, contrails, ...) |
 | `dt` |  | yr | none | Model time step length (1/6 yr) |
 
-### land (35)
+### land (37)
 
 | name | dims | unit | time basis | description |
 |---|---|---|---|---|
@@ -850,8 +852,10 @@ From the variable registry `scm4opt/data/registry/registry.csv`. Time basis: `st
 | `decay_0_h` |  | GtC/step | per_step | Initial (1850) detritus decay flux, derived from the steady-state pool balance |
 | `decay_0_s` |  | GtC/step | per_step | Initial (1850) soil decay flux, derived from the steady-state pool balance |
 | `fert_sigmoid_only` |  | 1 | none | Switch (boolean): use the sigmoidal fertilisation form only (abrupt-0p5xCO2 runs) |
-| `co2_ref` |  | ppm | none | Reference (1850) CO2 concentration of the fertilisation functions (284 ppm) |
+| `co2_ref` |  | ppm | none | Reference CO2 concentration of the fertilisation functions: the initial CO2 (284 ppm; 278.00745 ppm with --first_year=1750) |
 | `co2_npp_zero` |  | ppm | none | CO2 concentration at which NPP is zero in the sigmoidal fertilisation form (31 ppm) |
+| `fb_1850` |  | 1 | none | --first_year=1750: start of the land feedbacks (none, fert = CO2 fertilisation from 1850 relative to the simulated 1850 CO2, both = also the temperature feedbacks from 1850) |
+| `no_regrowth_frac_pre1850` |  | 1 | none | --first_year=1750: non-regrowing fraction of the land-use emissions before 1850 (default 1; empty = no_regrowth_frac) |
 
 ### ocean_hector (31)
 

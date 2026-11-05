@@ -30,7 +30,9 @@ Options (also with "-" instead of "_"):
   --csv_dir DIR     folder holding rcmip_<sce>/ (default: $mdl_dir, else as ensemble.py)
   --out_dir DIR     output folder (default: <csv_dir>/rcmip3_ens<run_suffix>)
   --out_csv FILE    output file, with a single --sce only
-  --run_suffix S    folder suffix of the runs, e.g. _hector (rcmip_<sce>_hector/)
+  --run_suffix S    folder suffix of the runs, e.g. _hector (rcmip_<sce>_hector/), _1750
+  --first_year Y    --src report: 1750 for --first_year=1750 runs (1750 concentration
+                    offsets; default: 1750 if --run_suffix contains _1750)
   --src member|report
   --climate_model NAME  climate_model of the rows (default SCM4OPT(PY)v4.0, version.py;
                     "keep" keeps the members' value). Members written before the rename
@@ -212,6 +214,9 @@ def _parser():
     ap.add_argument("--out_dir", "--out-dir", type=Path, default=None)
     ap.add_argument("--out_csv", "--out-csv", type=Path, default=None)
     ap.add_argument("--run_suffix", "--run-suffix", default="")
+    ap.add_argument("--first_year", "--first-year", type=int, choices=(1850, 1750), default=None,
+                    help="--src report: 1750 for runs with --first_year=1750 (1750 concentration "
+                         "offsets); default 1750 if --run_suffix contains _1750, else 1850")
     ap.add_argument("--src", choices=("member", "report"), default="member")
     ap.add_argument("--ref_compat", "--ref-compat", type=int, choices=(0, 1), default=1,
                     help="--src report: 0 uses the corrected heat-content/uptake conversions")
@@ -234,8 +239,9 @@ def main(argv=None):
     out_dir = (args.out_dir or csv_dir / f"rcmip3_ens{args.run_suffix}").expanduser()
     if args.out_csv and len(scenarios) != 1:
         sys.exit("--out_csv needs a single --sce")
+    first_year = args.first_year or (1750 if "_1750" in args.run_suffix else 1850)
     mapping = load_output_mapping(args.outmap_csv or data_path(DAT_DIR, "RCMIP3_src", "output_mapping.csv"),
-                                  ref_compat=bool(args.ref_compat))
+                                  ref_compat=bool(args.ref_compat), first_year=first_year)
     template = template_columns(args.template_csv)
     saved, no_folder, no_files = 0, [], []
     for sce in scenarios:
