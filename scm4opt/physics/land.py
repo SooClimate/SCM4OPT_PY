@@ -19,16 +19,25 @@ Options (--name=value flags):
   --scen=tcre / tcre2     derived values recomputed from the raw parameters
   --rname=abrupt-0p5xCO2  sigmoid-only CO2 fertilisation
   --use_ncycle            NPP x nit_npp_scaler(t): LandDrivers.npp_scaler of land_step
+  --first_year=1750       fertilisation reference 278.00745 ppm (the 1750 CO2), and
+    --lnd_fb_1850=fert    (default) CO2 fertilisation from 1850, relative to the simulated
+                          1850 CO2, as in the 1850 start (calibrated to CMIP6 ESMs that are in
+                          equilibrium in 1850); both: also the temperature feedbacks from 1850,
+                          relative to the 1850 deltem; none: both from 1750
+    --norgrwth_pre1850=f  (default 1) non-regrowing fraction of the land-use emissions before
+                          1850 (no_regrowth_frac for the later ones): f = 1 drops the regrowth
+                          legacy of the 1750-1849 land use; none: no_regrowth_frac for all years
+                          The state of both along the run is kept by Start1850.
 Not included: the --cali_lnd calibration branch.
 """
 
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, fields, replace
 
 import numpy as np
 import pandas as pd
 
 from ..core.config import DAT_DIR, data_path
-from ..core.constants import CO2_CONC_1850, CO2_NPP_ZERO_CONC, DT
+from ..core.constants import CO2_CONC_1750, CO2_CONC_INITIAL, CO2_NPP_ZERO_CONC, DT
 from ..core.errors import ModelBoundsError
 from ..core.config import RunConfig
 
@@ -123,8 +132,11 @@ class LandParams:
     decay_0_s: float
     # options
     fert_sigmoid_only: bool = False   # --rname=abrupt-0p5xCO2
-    co2_ref: float = CO2_CONC_1850
+    co2_ref: float = CO2_CONC_INITIAL
     co2_npp_zero: float = CO2_NPP_ZERO_CONC
+    # --first_year=1750 (see the module docstring)
+    fb_1850: str = "none"                    # --lnd_fb_1850: none | fert | both
+    no_regrowth_frac_pre1850: float | None = None   # --norgrwth_pre1850; None = no_regrowth_frac
 
 
 def _derive(raw, form):
@@ -185,7 +197,13 @@ _FEEDBACK_SCALE = 0.7  # CMIP6 branch only
 def load_land_params(cfg=None):
     """Land parameters of a run configuration."""
     cfg = cfg or RunConfig()
-    return _land_params(cfg.cm6mdl, cfg.dat_dir, cfg.scen, cfg.rname)
+    p = _land_params(cfg.cm6mdl, cfg.dat_dir, cfg.scen, cfg.rname)
+    if cfg.first_year != 1750:
+        return p
+    fb = cfg.lnd_fb_1850 or "fert"
+    nrg = cfg.norgrwth_pre1850 or "1"
+    return replace(p, co2_ref=CO2_CONC_1750, fb_1850=fb,
+                   no_regrowth_frac_pre1850=None if nrg == "none" else float(nrg))
 
 
 def _land_params(cm6mdl, dat_dir=DAT_DIR, scen="contrib", rname=None, dt=DT):
@@ -282,13 +300,17 @@ class LandDrivers:
     deltem: float                    # scm_deltem(n) [K]
     elnd_co2: float                  # dat_elnd(n,"co2") [GtC/step]
     npp_scaler: float | None = None  # nit_npp_scaler(n) (--use_ncycle), or None
+    # --first_year=1750 (Start1850.drivers fills these)
+    fert_ref: float | None = None    # simulated 1850 CO2: log fertilisation relative to it
+    fert_off: bool = False           # before 1850 with --lnd_fb_1850: no fertilisation (log = 1)
+    elu_pre1850: float = 0.0         # sum of dat_elnd(t1,"co2"), t1 <= n and t1 < 1850
 
 
 def land_step(p, prev, drivers):
     """One step of the land carbon cycle.
 
     p          : LandParams
-    prev       : LandRates of step n-1, or None at the first step (1850)
+    prev       : LandRates of step n-1, or None at the first step
     drivers    : LandDrivers of step n:
     co2        : scm_atmoCO2(n) [ppm]
     dtem       : scm_deltem(n) [K]
@@ -313,7 +335,12 @@ def land_step(p, prev, drivers):
                        / (1 + q.ths))
 
     # CO2 fertilisation (lnd_FERT*EQ); the sigmoid form is always evaluated
-    r.fert_log = 1 + p.beta * np.log(co2 / p.co2_ref)
+    if drivers.fert_off:
+        r.fert_log = 1.0
+    elif drivers.fert_ref is not None:
+        r.fert_log = 1 + p.beta * np.log(co2 / drivers.fert_ref)
+    else:
+        r.fert_log = 1 + p.beta * np.log(co2 / p.co2_ref)
     r.fert_r = ((1. + p.beta * np.log(680. / p.co2_ref))
                 / (1. + p.beta * np.log(340. / p.co2_ref)))
     z = p.co2_npp_zero
@@ -353,9 +380,15 @@ def land_step(p, prev, drivers):
     r.sumElu = r.sumPElu + r.sumHElu + r.sumSElu
 
     # Turnover times, regrowth and gross deforestation
-    r.tauP = (p.pool_0_p - p.no_regrowth_frac * r.sumPElu) / p.decay_0_p
-    r.tauH = (p.pool_0_h - p.no_regrowth_frac * r.sumHElu) / p.decay_0_h
-    r.tauS = (p.pool_0_s - p.no_regrowth_frac * r.sumSElu) / p.decay_0_s
+    if p.no_regrowth_frac_pre1850 is None:
+        r.tauP = (p.pool_0_p - p.no_regrowth_frac * r.sumPElu) / p.decay_0_p
+        r.tauH = (p.pool_0_h - p.no_regrowth_frac * r.sumHElu) / p.decay_0_h
+        r.tauS = (p.pool_0_s - p.no_regrowth_frac * r.sumSElu) / p.decay_0_s
+    else:   # --norgrwth_pre1850: the pre-1850 land-use emissions with their own fraction
+        extra = (p.no_regrowth_frac_pre1850 - p.no_regrowth_frac) * drivers.elu_pre1850
+        r.tauP = (p.pool_0_p - p.no_regrowth_frac * r.sumPElu - extra * p.f_defo_p) / p.decay_0_p
+        r.tauH = (p.pool_0_h - p.no_regrowth_frac * r.sumHElu - extra * p.f_defo_h) / p.decay_0_h
+        r.tauS = (p.pool_0_s - p.no_regrowth_frac * r.sumSElu - extra * p.f_defo_s) / p.decay_0_s
     r.regrowP = p.regrow_inter_p + p.regrow_gradi_p * r.tauP
     r.regrowH = p.regrow_inter_h + p.regrow_gradi_h * r.tauH
     r.regrowS = p.regrow_inter_s + p.regrow_gradi_s * r.tauS
@@ -397,21 +430,54 @@ def _check_bounds(r):
             raise ModelBoundsError(f"lnd_{name}", getattr(r, name), "[5, 1e8]")
 
 
-def run_land(p, co2, tatm, elnd_co2, npp_scaler=None):
+class Start1850:
+    """--first_year=1750: the land drivers of the options --lnd_fb_1850 and
+    --norgrwth_pre1850, which need the simulated 1850 state and the cumulative pre-1850
+    land-use emissions. One instance per run; call drivers() for n = 0, 1, ... in order.
+
+    p : LandParams; i1850 : step index of 1850 (None: an 1850 start, plain drivers).
+    """
+
+    def __init__(self, p, i1850=None):
+        self.p, self.i1850 = p, i1850
+        self.co2_1850 = self.deltem_1850 = None
+        self.elu_pre1850 = 0.0
+
+    def drivers(self, n, co2, dtem, elnd_co2, npp_scaler=None):
+        """LandDrivers of step n (dtem: scm_deltem(n), unchanged in the model output)."""
+        p, i1850 = self.p, self.i1850
+        if i1850 is None or (p.fb_1850 == "none" and p.no_regrowth_frac_pre1850 is None):
+            return LandDrivers(co2, dtem, elnd_co2, npp_scaler)
+        if n < i1850:
+            self.elu_pre1850 += elnd_co2
+        elif n == i1850:
+            self.co2_1850, self.deltem_1850 = co2, dtem
+        after = n >= i1850
+        if p.fb_1850 == "both":     # temperature feedbacks from 1850, relative to 1850
+            dtem = dtem - self.deltem_1850 if after else 0.0
+        fb = p.fb_1850 != "none"
+        return LandDrivers(co2, dtem, elnd_co2, npp_scaler,
+                           fert_ref=self.co2_1850 if fb and after else None,
+                           fert_off=fb and not after, elu_pre1850=self.elu_pre1850)
+
+
+def run_land(p, co2, tatm, elnd_co2, npp_scaler=None, i1850=None):
     """Run the land module offline over prescribed series (all length N).
 
     co2 : scm_atmoCO2 [ppm]; tatm : scm_tatm [K]; elnd_co2 : dat_elnd(t,"co2");
-    npp_scaler : nit_npp_scaler series (--use_ncycle) or None.
+    npp_scaler : nit_npp_scaler series (--use_ncycle) or None;
+    i1850 : step index of 1850 with --first_year=1750 (Start1850), else None.
     Returns {variable name without the lnd_ prefix: array}, plus "deltem".
     """
     n = len(co2)
     out = {name: np.empty(n) for name in OUTPUTS}
     out["deltem"] = np.empty(n)
     prev = None
+    s1850 = Start1850(p, i1850)
     for i in range(n):
         dtem = deltem(tatm[i - 1] if i >= 1 else 0.0, tatm[i - 2] if i >= 2 else 0.0, i)
-        prev = land_step(p, prev, LandDrivers(co2[i], dtem, elnd_co2[i],
-                                              None if npp_scaler is None else npp_scaler[i]))
+        prev = land_step(p, prev, s1850.drivers(i, co2[i], dtem, elnd_co2[i],
+                                                None if npp_scaler is None else npp_scaler[i]))
         out["deltem"][i] = dtem
         for name in OUTPUTS:
             out[name][i] = getattr(prev, name)

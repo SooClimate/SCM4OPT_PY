@@ -16,7 +16,7 @@ from scm4opt.scenarios.forward import run
 
 REF = Path(__file__).parent / "reference"
 STRIDE = 6                 # references hold every STRIDE-th step (annual)
-CASES = {'contrib_ssp1_19': ['--scen=contrib', '--psrc=IAMC', '--psce=SSP1_19'], 'rcmip3_ssp585_conc': ['--scen=rcmip3', '--rname=ssp585', '--load_conc=all'], 'rcmip3_historical_obs': ['--scen=rcmip3', '--rname=historical', '--load_conc=nco2', '--load_AGAGE=1', '--load_NOAA=1'], 'rcmip3_ssp126_hector': ['--scen=rcmip3', '--rname=ssp126', '--ocean_model=hector', '--cm6mdl=MIROC6', '--ch4rfc=myhre']}
+CASES = {'contrib_ssp1_19': ['--scen=contrib', '--psrc=IAMC', '--psce=SSP1_19'], 'rcmip3_ssp585_conc': ['--scen=rcmip3', '--rname=ssp585', '--load_conc=all'], 'rcmip3_historical_obs': ['--scen=rcmip3', '--rname=historical', '--load_conc=nco2', '--load_AGAGE=1', '--load_NOAA=1'], 'rcmip3_ssp126_hector': ['--scen=rcmip3', '--rname=ssp126', '--ocean_model=hector', '--cm6mdl=MIROC6', '--ch4rfc=myhre'], 'rcmip3_esm_allghg_hist_1750': ['--scen=rcmip3', '--rname=esm-allGHG-hist', '--first_year=1750']}
 
 
 @pytest.mark.parametrize("case", sorted(CASES))
@@ -30,6 +30,9 @@ def test_regression(case):
     missing = sorted(set(ref.files) - set(out))
     assert not missing, f"outputs missing: {missing[:10]}"
     for name in ref.files:
+        # atol relative to the output's scale: values near zero (e.g. a heat content
+        # crossing zero) differ by round-off between numpy/pandas versions
+        scale = np.nanmax(np.abs(ref[name]), initial=0.0)
         np.testing.assert_allclose(np.asarray(out[name], float)[::STRIDE], ref[name],
-                                   rtol=1e-10, atol=1e-12,
+                                   rtol=1e-10, atol=1e-12 + 1e-10 * scale,
                                    err_msg=name)

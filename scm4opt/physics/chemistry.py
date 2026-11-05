@@ -25,7 +25,7 @@ from dataclasses import dataclass, fields
 import numpy as np
 
 from ..core.config import ChemOptions
-from ..core.constants import DT
+from ..core.constants import CH4_CONC_1750, CO2_CONC_1750, DT, N2O_CONC_1750
 from .halo_data import COLUMNS as _HCOLS, FRACREL, HALO_TABLE
 from ..core.sets import FHALO, HALO, HALO_CFC, HALO_HFC, HALO_ODS, HALO_PFC, MHALO
 from ..core.tables import halo_mask, pick
@@ -47,6 +47,19 @@ BASELINES = {
     "myhre":   dict(co2_init=279., co2_0=284, ch4_init=722, ch4_0=731.4059957,
                     n2o_init=273, n2o_0=270, d_ch4_1850=76.84303284, d_n2o_1850=5.0650513),
 }
+# --first_year=1750, both CH4 forcing patterns: the reference concentrations are the 1750
+# values of the RCMIP3 inputs, the CH4 and N2O anomalies start at zero; the forcing references
+# (*_init) are the initial concentrations C0, M0, N0 of Etminan et al. (2016, Table 1), i.e.
+# the 1750 values, so that the CO2, CH4 and N2O forcing is zero in 1750
+BASELINE_1750 = dict(co2_init=CO2_CONC_1750, ch4_init=CH4_CONC_1750, n2o_init=N2O_CONC_1750,
+                     co2_0=CO2_CONC_1750, ch4_0=CH4_CONC_1750, n2o_0=N2O_CONC_1750,
+                     d_ch4_1850=0., d_n2o_1850=0.)
+
+
+def baselines(ch4rfc="etminan", first_year=1850):
+    """Reference and initial concentrations of a CH4 forcing pattern and first year."""
+    b = pick(BASELINES, ch4rfc, "--ch4rfc")
+    return dict(BASELINE_1750) if first_year == 1750 else b
 
 # Age of air (HVSNKcirc_mdl)
 CHM_GAMMA_AGE = {"CAM-35": 0.091375, "CMAM": 0.090625, "Niwa-SOCOL": 0.0683125,
@@ -334,13 +347,13 @@ class ChemParams:
 def load_chem_params(cfg=None):
     """Chemistry parameters of a run configuration."""
     cfg = cfg or RunConfig()
-    return _chem_params(cfg.chem, cfg.ch4rfc, cfg.scen)
+    return _chem_params(cfg.chem, cfg.ch4rfc, cfg.scen, cfg.first_year)
 
 
-def _chem_params(opts=None, ch4rfc="etminan", scen="contrib"):
+def _chem_params(opts=None, ch4rfc="etminan", scen="contrib", first_year=1850):
     """Chemistry parameters for one set of model choices."""
     o = opts or ChemOptions()
-    b = pick(BASELINES, ch4rfc, "--ch4rfc")
+    b = baselines(ch4rfc, first_year)
 
     # scale_OH depends on the scenario
     scale_OH = 0.4 if scen in ("ssp1", "ssp2", "ssp3", "ssp4", "ssp5") else 0.64

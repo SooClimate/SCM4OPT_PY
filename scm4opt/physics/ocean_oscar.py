@@ -36,7 +36,7 @@ import numpy as np
 import pandas as pd
 
 from ..core.config import DAT_DIR, OceanOptions, data_path
-from ..core.constants import CO2_0, DT
+from ..core.constants import CO2_0, CO2_CONC_1750, DT
 from ..core.tables import pick
 from ..core.errors import ModelBoundsError
 from ..core.config import RunConfig
@@ -161,7 +161,8 @@ def load_ocean_params(cfg=None):
     """OSCAR ocean parameters of a run configuration."""
     cfg = cfg or RunConfig()
     return replace(_ocean_params(cfg.cm6mdl, cfg.ocean, cfg.dat_dir, cfg.rname),
-                   flux_bounds=not cfg.load_conc, ref_compat=cfg.ref_compat)
+                   flux_bounds=not cfg.load_conc, ref_compat=cfg.ref_compat,
+                   co2_0=CO2_CONC_1750 if cfg.first_year == 1750 else CO2_0)
 
 
 def _ocean_params(cm6mdl, opts=None, dat_dir=DAT_DIR, rname=None):

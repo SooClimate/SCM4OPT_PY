@@ -20,14 +20,22 @@ Reference material, generated from the code:
 Python 3.10 or newer with numpy, pandas and scipy. Ensembles also need GNU parallel.
 
 ```bash
-git clone <repository> SCM4OPT_PY
+pip install scm4opt         # from PyPI
+scm4opt --version
+```
+
+or, to work with the code and the tests, from a clone of the repository:
+
+```bash
+git clone https://github.com/SooClimate/SCM4OPT_PY SCM4OPT_PY
 cd SCM4OPT_PY
 pip install -e .            # or: pip install -e ".[test]" to run the tests
 scm4opt --version
 ```
 
-The parameter tables come with the package; the scenario inputs are a separate download,
-found through `$SCM4OPT_DATA` or in `scm4opt/data/` of an editable install (section 2). Without installing, run from the
+The parameter tables come with the package, and so do the scenario inputs of the RCMIP3
+experiments `historical`, `esm-hist`, `esm-allGHG-hist`; the other scenario inputs are a separate download, found
+through `$SCM4OPT_DATA` or in `scm4opt/data/` of an editable install (section 2). Without installing, run from the
 repository folder as `python3 -m scm4opt ...`.
 
 GNU parallel: `brew install parallel` (macOS), `apt install parallel` / `dnf install
@@ -46,7 +54,9 @@ The model reads two kinds of data:
 | `contrib/` | emission totals, land cover, land-use CO2 and the contribution-run forcing data | scenario inputs |
 | `AGAGE/`, `NOAA/` | observed concentrations | scenario inputs |
 
-The scenario inputs are distributed separately as SCM4OPT_PY_DAT, published on Zenodo:
+The scenario inputs of the RCMIP3 experiments `historical`, `esm-hist`, `esm-allGHG-hist` (from 1850 and from 1750) are
+included in `scm4opt/data/` of this repository. The others are distributed separately
+as SCM4OPT_PY_DAT, published on Zenodo (from 1850 only so far):
 [doi:10.5281/zenodo.23718272](https://doi.org/10.5281/zenodo.23718272). Use them from their own folder with `export SCM4OPT_DATA=/path/to/SCM4OPT_PY_DAT`,
 or copy the four folders into `scm4opt/data/`. They are listed with their size and SHA-256
 checksum in `inputs_manifest.csv` of the data folder:
@@ -85,8 +95,8 @@ there:
 
 | `--scen` | what it runs | main options |
 |---|---|---|
-| `contrib` (default) | emission-driven run 1850-2100 from `contrib/<hsrc>_<psrc>/total/<psce>_WORLD.csv` | `--psce`, `--psrc`, `--hsrc`, `--land`, `--lcov`; marginal analysis `--tyear`, `--byear`, `--dyear`, `--tproj`, `--thist`; `--fix_conc=1` |
-| `rcmip3` | an RCMIP phase 3 experiment; `--rname` selects the experiment and its time range | `--rname`, `--load_conc=all` (CO2, CH4, N2O and halogens prescribed) or `--load_conc=nco2` (as all, but CO2 emission-driven), `--load_AGAGE=1`, `--load_NOAA=1` |
+| `contrib` (default) | emission-driven run 1850-2100 from `contrib/<hsrc>_<psrc>/total/<psce>_WORLD.csv` | `--psce`, `--psrc`, `--hsrc`, `--land`, `--lcov`; marginal analysis `--tyear`, `--byear`, `--dyear`, `--tproj`, `--thist` with `--minus_ems=1 --rdc_ems=<column> [--rdc_mix=1]`, `--rdc_lcc`, `--rdc_rfc`; `--use_cm=1` (Carbon Monitor CO2 2019-2025); `--fix_conc=1`; `--cout5=<dir>` writes the contribution report |
+| `rcmip3` | an RCMIP phase 3 experiment; `--rname` selects the experiment and its time range | `--rname`, `--load_conc=all` (CO2, CH4, N2O and halogens prescribed) or `--load_conc=nco2` (as all, but CO2 emission-driven), `--load_AGAGE=1`, `--load_NOAA=1`, `--first_year=1750` (see below) |
 | `contrib_rfc` | forcing components read from files, then effective forcing and DOECLIM only (no carbon cycle) | `--fol`, `--case`, `--minus_rfc`, `--fraction` |
 | `tcre`, `tcre2` | a `contrib` run with the settings of the TCRE analyses (transient climate response to cumulative emissions): natural forcing off, a fixed DOECLIM parameter set, the alternative land and Hector initialisation | as `contrib` |
 
@@ -100,12 +110,34 @@ there:
 | `--ch4rfc=etminan\|myhre` | CO2/CH4/N2O forcing formulas (Etminan et al. 2016 or Myhre et al. 1998) |
 | `--ocean_model=osc\|hector` | ocean carbon model: OSCAR-type mixed layer (default) or Hector v1.0 four-box ocean (`--same_alk=1`: one alkalinity) |
 | `--clim_sensi=<K>` | equilibrium climate sensitivity overriding the calibration |
+| `--co2_conc_initial=<ppm>` | CO2 of the atmospheric carbon pool at the first step (default 284, or 278.00745 with `--first_year=1750`; former name `--co2_conc_1850`, still accepted). When CO2 is prescribed (`--load_conc=all`, `--fix_conc=1`), the run outputs the compatible CO2 emissions `scm_eind_co2_compat` (fossil and industry) and `scm_ems_co2_compat` (plus land use). Running emission-driven with these emissions and `--co2_conc_initial` set to the prescribed first-year value reproduces the prescribed concentrations |
+| `--rcmip_compat_ems=1` | with `--rout3`: where CO2 is prescribed, the RCMIP3 rows `Emissions\|CO2` and `Emissions\|CO2\|Fossil and Industry` hold the compatible emissions instead of the input emissions (the other rows are unchanged; emission-driven runs are not affected). The 1850 value sums five of the six steps, because the first step has no compatible emission |
 | `--<process>_mdl=<choice>` | the chemistry, forcing and ocean process choices (e.g. `--OHSNK_mdl=CMAM`); see options.md |
 | `--ref_compat=0` | corrected behaviour instead of the reference quirks (section 6) |
 | `--climate_model=<name>` | the `climate_model` written in the RCMIP3 rows (default `SCM4OPT(PY)v4.0`) |
 | `--dat_dir=<folder>` | data folder |
 
 The complete list with defaults is [options.md](options.md).
+
+### Runs from 1750 (`--first_year=1750`)
+
+By default an RCMIP3 run starts in 1850 from an equilibrium state (the RCMIP3 inputs). With
+`--scen=rcmip3 --first_year=1750` it starts in 1750 instead, for example for assessments that
+use 1750 as the pre-industrial reference:
+
+- inputs: the `_1750` files, `RCMIP3/<rname>_1750.csv` and `RCMIP3/<rname>_conc_1750.csv`
+  (concentrations as anomalies from 1750) and `nat/*_rcmip3_<group>_bimon_1750.csv`;
+- reference concentrations: the 1750 values of the RCMIP3 inputs (CO2 278.00745 ppm, CH4
+  720.8548 ppb, N2O 266.57 ppb), which are also the initial concentrations of the Etminan et
+  al. (2016) forcing, so the CO2, CH4 and N2O forcing is zero in 1750;
+- land: the land carbon cycle is calibrated for an equilibrium start in 1850, so by default
+  `--lnd_fb_1850=fert` starts the CO2 fertilisation in 1850 (relative to the simulated 1850
+  CO2) and `--norgrwth_pre1850=1` keeps the 1750-1849 land-use emissions from regrowing.
+  `--lnd_fb_1850=both` also starts the land temperature feedbacks in 1850;
+  `--lnd_fb_1850=none --norgrwth_pre1850=none` applies the 1850 calibration from 1750 unchanged;
+- outputs: the RCMIP3 rows add the 1750 reference concentrations (`RCMIP3_src/conc_mapping_1750.csv`).
+  `scm4opt ensemble ... -- --first_year=1750` writes to `rcmip_<rname>_1750/`, and
+  `scm4opt rcmip_export --run_suffix=_1750` combines those members.
 
 ---
 
@@ -138,6 +170,36 @@ bash scm4opt/run_rcmip3_all_py.sh --help
 
 By default the runner writes only the RCMIP3 CSV of each member (about 2 MB);
 `--full-report` adds the per-step report.
+
+### Contribution runs
+
+`scm4opt/run_period_py.sh` runs the contribution analysis of SSP1_19 (with Carbon Monitor
+CO2) for the contribution ensemble (`scm4opt/data/ensemble/contrib_unc_h.txt`, first 1000
+members): a reference run and 64 runs that each, in the chosen year, reduce one emission
+species by 0.1 %, hold the 1850 land cover, or remove a natural forcing. The script sets
+`--reduce_after_cm=1`: the reduction is applied after the Carbon Monitor step, so CO2
+reductions in 2019-2025 count and a reduction in 2018-2022 does not leak into 2023-2025
+(`--ref_compat=1` alone applies it before, as the reference results do).
+
+```bash
+bash scm4opt/run_period_py.sh              # 2020
+bash scm4opt/run_period_py.sh 2010         # another year
+bash scm4opt/run_period_py.sh tAll         # the whole period 1850-2100
+bash scm4opt/run_period_py.sh 2010 periodb # all years up to 2010 (1850-2010)
+nmem=50 njobs=8 bash scm4opt/run_period_py.sh   # 50 members, 8 at a time
+```
+
+With `periodb` (or `ptype=periodb`) the reduction covers every step up to the end of the
+year (`--byear`) instead of that year alone (`--tyear`).
+
+Each run writes the contribution report
+`csv_<ptype>_<year>_py/WORLD/COMB_IAMC_SSP1_19_<ems>_EMISS_IND_<case>_<ctag>.csv`
+(about 6.4 MB; 65 runs x 1000 members are about 415 GB). A contribution is the difference
+between the reference run (`co2i_..._all`) and a reduced run. A rerun continues where an
+interrupted one stopped.
+
+Results go under `$mdl_dir` (default: the folder the script is started from);
+`qsub -v mdl_dir=...` or `mdl_dir=... bash ...` sets it.
 
 ### Combining members into submission files
 

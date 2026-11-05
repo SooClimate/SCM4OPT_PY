@@ -1,0 +1,44 @@
+Index,Variable,Unit,Tier,rpt_var,rpt_var0,rpt_var_scale
+1,Atmospheric Concentrations|CH4,ppb,1,chm_D_CH4,720.8548,1
+2,Atmospheric Concentrations|CO2,ppm,1,chm_D_CO2,278.00745,1
+3,Atmospheric Concentrations|F-Gases|HFC|HFC227ea,ppt,2,chm_D_hfc227ea,0,1
+4,Atmospheric Concentrations|F-Gases|HFC|HFC32,ppt,2,chm_D_hfc32,0,1
+5,Atmospheric Concentrations|F-Gases|PFC|C2F6,ppt,2,chm_D_c2f6,0,1
+6,Atmospheric Concentrations|F-Gases|PFC|CF4,ppt,2,chm_D_cf4,34.05,1
+7,Atmospheric Concentrations|F-Gases|SO2F2,ppt,2,chm_D_so2f2,0,1
+8,Atmospheric Concentrations|Montreal Gases|CCl4,ppt,2,chm_D_ccl4,0,1
+9,Atmospheric Concentrations|Montreal Gases|CH2Cl2,ppt,2,chm_D_ch2cl2,6.9,1
+10,Atmospheric Concentrations|Montreal Gases|CH3Br,ppt,2,chm_D_ch3br,5.3,1
+11,Atmospheric Concentrations|Montreal Gases|CH3Cl,ppt,2,chm_D_ch3cl,457,1
+12,Atmospheric Concentrations|Montreal Gases|CHCl3,ppt,2,chm_D_chcl3,6,1
+13,Atmospheric Concentrations|Montreal Gases|Halon1211,ppt,2,chm_D_halon1211,0,1
+14,Atmospheric Concentrations|N2O,ppb,2,chm_D_N2O,266.57,1
+15,Atmospheric Concentrations|F-Gases|HFC|HFC125,ppt,2,chm_D_hfc125,0,1
+16,Atmospheric Concentrations|F-Gases|HFC|HFC134a,ppt,2,chm_D_hfc134a,0,1
+17,Atmospheric Concentrations|F-Gases|HFC|HFC143a,ppt,2,chm_D_hfc143a,0,1
+18,Atmospheric Concentrations|F-Gases|HFC|HFC152a,ppt,2,chm_D_hfc152a,0,1
+19,Atmospheric Concentrations|F-Gases|HFC|HFC23,ppt,2,chm_D_hfc23,0,1
+20,Atmospheric Concentrations|F-Gases|HFC|HFC236fa,ppt,2,chm_D_hfc236fa,0,1
+21,Atmospheric Concentrations|F-Gases|HFC|HFC245fa,ppt,2,chm_D_hfc245fa,0,1
+22,Atmospheric Concentrations|F-Gases|HFC|HFC365mfc,ppt,2,chm_D_hfc365mfc,0,1
+23,Atmospheric Concentrations|F-Gases|HFC|HFC4310mee,ppt,2,chm_D_hfc4310mee,0,1
+24,Atmospheric Concentrations|F-Gases|NF3,ppt,2,chm_D_nf3,0,1
+25,Atmospheric Concentrations|F-Gases|PFC|C3F8,ppt,2,chm_D_c3f8,0,1
+26,Atmospheric Concentrations|F-Gases|PFC|C4F10,ppt,2,chm_D_c4f10,0,1
+27,Atmospheric Concentrations|F-Gases|PFC|C5F12,ppt,2,chm_D_c5f12,0,1
+28,Atmospheric Concentrations|F-Gases|PFC|C6F14,ppt,2,chm_D_c6f14,0,1
+29,Atmospheric Concentrations|F-Gases|PFC|C7F16,ppt,2,chm_D_c7f16,0,1
+30,Atmospheric Concentrations|F-Gases|PFC|C8F18,ppt,2,chm_D_c8f18,0,1
+31,Atmospheric Concentrations|F-Gases|PFC|cC4F8,ppt,2,chm_D_cc4f8,0,1
+32,Atmospheric Concentrations|F-Gases|SF6,ppt,2,chm_D_sf6,0,1
+33,Atmospheric Concentrations|Montreal Gases|CFC|CFC11,ppt,2,chm_D_cfc11,0,1
+34,Atmospheric Concentrations|Montreal Gases|CFC|CFC113,ppt,2,chm_D_cfc113,0,1
+35,Atmospheric Concentrations|Montreal Gases|CFC|CFC114,ppt,2,chm_D_cfc114,0,1
+36,Atmospheric Concentrations|Montreal Gases|CFC|CFC115,ppt,2,chm_D_cfc115,0,1
+37,Atmospheric Concentrations|Montreal Gases|CFC|CFC12,ppt,2,chm_D_cfc12,0,1
+38,Atmospheric Concentrations|Montreal Gases|CH3CCl3,ppt,2,chm_D_ch3ccl3,0,1
+39,Atmospheric Concentrations|Montreal Gases|HCFC141b,ppt,2,chm_D_hcfc141b,0,1
+40,Atmospheric Concentrations|Montreal Gases|HCFC142b,ppt,2,chm_D_hcfc142b,0,1
+41,Atmospheric Concentrations|Montreal Gases|HCFC22,ppt,2,chm_D_hcfc22,0,1
+42,Atmospheric Concentrations|Montreal Gases|Halon1301,ppt,2,chm_D_halon1301,0,1
+43,Atmospheric Concentrations|Montreal Gases|Halon2402,ppt,2,chm_D_halon2402,0,1

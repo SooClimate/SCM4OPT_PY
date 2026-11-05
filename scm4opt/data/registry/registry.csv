@@ -236,8 +236,10 @@ decay_0_p,parameter,land,,GtC/step,per_step,"Initial (1850) plant decay flux, de
 decay_0_h,parameter,land,,GtC/step,per_step,"Initial (1850) detritus decay flux, derived from the steady-state pool balance",,,
 decay_0_s,parameter,land,,GtC/step,per_step,"Initial (1850) soil decay flux, derived from the steady-state pool balance",,,
 fert_sigmoid_only,parameter,land,,1,none,Switch (boolean): use the sigmoidal fertilisation form only (abrupt-0p5xCO2 runs),,,
-co2_ref,parameter,land,,ppm,none,Reference (1850) CO2 concentration of the fertilisation functions (284 ppm),,,
+co2_ref,parameter,land,,ppm,none,Reference CO2 concentration of the fertilisation functions: the initial CO2 (284 ppm; 278.00745 ppm with --first_year=1750),,,
 co2_npp_zero,parameter,land,,ppm,none,CO2 concentration at which NPP is zero in the sigmoidal fertilisation form (31 ppm),,,
+fb_1850,parameter,land,,1,none,"--first_year=1750: start of the land feedbacks (none, fert = CO2 fertilisation from 1850 relative to the simulated 1850 CO2, both = also the temperature feedbacks from 1850)",,,
+no_regrowth_frac_pre1850,parameter,land,,1,none,--first_year=1750: non-regrowing fraction of the land-use emissions before 1850 (default 1; empty = no_regrowth_frac),,,
 alpha_mld,parameter,ocean_oscar,,1,none,Amplitude of the relative mixed-layer depth response to SST change,Joos et al. (1996),,
 gamma_mld,parameter,ocean_oscar,,1/K,none,Exponential sensitivity of mixed-layer depth to SST anomaly,Joos et al. (1996),,
 gas_exchange_rate,parameter,ocean_oscar,,1/yr,per_year,Air-sea gas-exchange coefficient,Joos et al. (1996),,
@@ -767,6 +769,8 @@ rfc_volc,output,forcing,t,W/m2,state,Radiative forcing of volcanic eruptions (pr
 scm_atmo_pool,output,coupling,t,GtC,state,Atmospheric carbon pool,,251,variable
 scm_atmoCO2,output,coupling,t,ppm,state,"Atmospheric CO2 concentration (pool / 2.123 GtC per ppm, or prescribed)",,,
 scm_atmoLndFlux,output,coupling,t,GtC/step,per_step,"Net atmosphere-to-land carbon flux (positive = uptake), per step",,302,variable
+scm_eind_co2_compat,output,coupling,t,GtC/step,per_step,"Compatible fossil and industrial CO2 emissions when CO2 is prescribed (--load_conc=all or --fix_conc): the atmospheric carbon balance solved for the emissions (atmosphere.compatible_emissions), per step",,403,variable
+scm_ems_co2_compat,output,coupling,t,GtC/step,per_step,"Compatible total CO2 emissions when CO2 is prescribed: scm_eind_co2_compat plus the land-use CO2 emissions, per step",,404,variable
 scm_atmoSeaFlux,output,coupling,t,GtC/step,per_step,"Net atmosphere-to-ocean carbon flux (positive = uptake), per step",,301,variable
 scm_cca,output,coupling,t,GtC,state,"Cumulative total CO2 emissions since 1850, up to the previous step",,,
 scm_D_AERh,output,coupling,t,Tg,state,Hydrophilic (solubility-weighted) aerosol burden anomaly from preindustrial,,,

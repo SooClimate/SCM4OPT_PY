@@ -29,6 +29,8 @@ Usage (from the directory that contains scm4opt/):
 with --flag=value options: the fields of config.RunConfig and its option classes
 (e.g. --psce=SSP1_19 --cm6mdl=MIROC6; full list in docs/options.md of the repository).
 --rout3 writes the model report (report.py) as <dir>/<rname>_<case>_<ctag>.csv
+--cout5=<dir> writes the contribution report as
+<dir>/<rgn>/COMB_<psrc>_<psce>_<ems>_<csec>_<case>_<ctag>.csv (report.write_cout5_csv)
 and the RCMIP3 submission rows as SCM4OPTv40_rcmip_phase3_<scenario>_<case>.csv
 
 Scenario drivers:
@@ -46,6 +48,9 @@ Examples:
   python3 -m scm4opt --scen=contrib --psce=SSP1_19 --cm6mdl=MIROC6 --rout3=out/
   # --fix_conc=1 needs data/contrib/<hsrc>_<psrc>/conc/<psce>_WORLD.csv
   python3 -m scm4opt --scen=contrib --psce=SSP1_19 --fix_conc=1
+  # contribution of 0.1 % of the 2020 BC emissions (industrial + land use), Carbon Monitor CO2
+  python3 -m scm4opt --scen=contrib --use_cm=1 --minus_ems=1 --rdc_ems=bc \
+      --rdc_mix=1 --tyear=2020 --ems=bc --ctag=minus_ems --cout5=out/
 
   # contrib_rfc (forcing data in <fol>/rfc_<X>/..._all.csv, one ensemble member)
   python3 -m scm4opt --scen=contrib_rfc --fol=<folder> --case=000000
@@ -94,7 +99,7 @@ no carbon cycle or chemistry.
 
 ### `main(argv)`
 
-Constants: `CO2_CONC_1850`, `GWP_SUMS`, `PPM2GTC`
+Constants: `GWP_SUMS`, `PPM2GTC`
 
 
 ## `scm4opt.scenarios.rcmip3_data`

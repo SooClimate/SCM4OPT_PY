@@ -1,20 +1,27 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "scm4opt"
-version = "4.1.0.dev0"
+version = "4.1.1"
 description = "SCM4OPT: Simple Climate Model for OPTimization (Python version)"
 readme = "README.md"
-license = {text = "GPL-3.0-or-later"}
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE", "NOTICE", "scm4opt/data/MAGICC6/NOTICE.txt"]
 requires-python = ">=3.10"
 classifiers = [
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Atmospheric Science",
 ]
 dependencies = ["numpy", "pandas", "scipy"]
+
+[project.urls]
+Homepage = "https://github.com/SooClimate/SCM4OPT_PY"
+Source = "https://github.com/SooClimate/SCM4OPT_PY"
+Documentation = "https://github.com/SooClimate/SCM4OPT_PY/tree/main/docs"
+Issues = "https://github.com/SooClimate/SCM4OPT_PY/issues"
+Data = "https://doi.org/10.5281/zenodo.23718272"
 
 [project.optional-dependencies]
 test = ["pytest"]
@@ -30,5 +37,98 @@ testpaths = ["tests"]
 include = ["scm4opt*"]
 
 [tool.setuptools.package-data]
-# parameter tables only; the scenario inputs in scm4opt/data are not packaged
-scm4opt = ["data/AR6/**/*", "data/CMIP6/**/*", "data/MAGICC6/**/*", "data/RCMIP/**/*", "data/RCMIP3_src/**/*", "data/ensemble/**/*", "data/hector/**/*", "data/nat/**/*", "data/registry/**/*", "data/tables/**/*"]
+# parameter tables and the bundled scenario inputs (other inputs in scm4opt/data are not packaged)
+scm4opt = [
+    "data/AR6/**/*",
+    "data/CMIP6/**/*",
+    "data/CMonitor/**/*",
+    "data/MAGICC6/**/*",
+    "data/RCMIP/**/*",
+    "data/RCMIP3_src/**/*",
+    "data/ensemble/**/*",
+    "data/hector/**/*",
+    "data/nat/**/*",
+    "data/registry/**/*",
+    "data/tables/**/*",
+    "data/AGAGE/c2f6.csv",
+    "data/AGAGE/c3f8.csv",
+    "data/AGAGE/cc4f8.csv",
+    "data/AGAGE/ccl4.csv",
+    "data/AGAGE/cf4.csv",
+    "data/AGAGE/cfc11.csv",
+    "data/AGAGE/cfc113.csv",
+    "data/AGAGE/cfc114.csv",
+    "data/AGAGE/cfc115.csv",
+    "data/AGAGE/cfc12.csv",
+    "data/AGAGE/cfc13.csv",
+    "data/AGAGE/ch2cl2.csv",
+    "data/AGAGE/ch3br.csv",
+    "data/AGAGE/ch3ccl3.csv",
+    "data/AGAGE/ch3cl.csv",
+    "data/AGAGE/chcl3.csv",
+    "data/AGAGE/halon1211.csv",
+    "data/AGAGE/halon1301.csv",
+    "data/AGAGE/halon2402.csv",
+    "data/AGAGE/hcfc124.csv",
+    "data/AGAGE/hcfc132b.csv",
+    "data/AGAGE/hcfc133a.csv",
+    "data/AGAGE/hcfc141b.csv",
+    "data/AGAGE/hcfc142b.csv",
+    "data/AGAGE/hcfc22.csv",
+    "data/AGAGE/hfc125.csv",
+    "data/AGAGE/hfc134a.csv",
+    "data/AGAGE/hfc143a.csv",
+    "data/AGAGE/hfc152a.csv",
+    "data/AGAGE/hfc227ea.csv",
+    "data/AGAGE/hfc23.csv",
+    "data/AGAGE/hfc236fa.csv",
+    "data/AGAGE/hfc245fa.csv",
+    "data/AGAGE/hfc32.csv",
+    "data/AGAGE/hfc365mfc.csv",
+    "data/AGAGE/hfc4310mee.csv",
+    "data/AGAGE/nf3.csv",
+    "data/AGAGE/sf6.csv",
+    "data/AGAGE/so2f2.csv",
+    "data/NOAA/noaa_ch4_mm_gl.gdx.csv",
+    "data/NOAA/noaa_co2_mm_mlo.gdx.csv",
+    "data/NOAA/noaa_n2o_mm_gl.gdx.csv",
+    "data/NOAA/noaa_sf6_mm_gl.gdx.csv",
+    "data/RCMIP3/esm-allGHG-hist.csv",
+    "data/RCMIP3/esm-allGHG-hist_1750.csv",
+    "data/RCMIP3/esm-hist.csv",
+    "data/RCMIP3/esm-hist_1750.csv",
+    "data/RCMIP3/esm-hist_conc.csv",
+    "data/RCMIP3/esm-hist_conc_1750.csv",
+    "data/RCMIP3/historical.csv",
+    "data/RCMIP3/historical_1750.csv",
+    "data/RCMIP3/historical_conc.csv",
+    "data/RCMIP3/historical_conc_1750.csv",
+    "data/RCMIP3/ssp126.csv",
+    "data/RCMIP3/ssp585.csv",
+    "data/RCMIP3/ssp585_conc.csv",
+    "data/contrib/COMB_IAMC/total/SSP1_19_WORLD.csv",
+    "data/contrib/LC_LUH_IAMC/AFR/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/AFR/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/CHN/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/CHN/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/EUR/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/EUR/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/IND/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/IND/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/JPN/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/JPN/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/LAM/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/LAM/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/MEA/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/MEA/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/OAS/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/OAS/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/ROW/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/ROW/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/RUS/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/RUS/lc_SSP2_45.csv",
+    "data/contrib/LC_LUH_IAMC/USA/lc_SSP1_19.csv",
+    "data/contrib/LC_LUH_IAMC/USA/lc_SSP2_45.csv",
+    "data/contrib/LUC_BLUE_IAMC/WORLD/CO2_EMISS_LUC_SSP1_19.csv",
+    "data/inputs_manifest.csv",
+]

@@ -43,7 +43,7 @@ Fields: `O3Tradeff_mdl`, `O3Sradeff_mdl`, `POAradeff_mdl`, `SO4radeff_mdl`, `BCr
 
 ### class `RunConfig`
 
-Fields: `scen`, `psce`, `psrc`, `hsrc`, `land`, `lcov`, `rgn`, `csec`, `ems`, `cm6mdl`, `rname`, `use_ncycle`, `ch4rfc`, `nat_grp`, `tproj`, `thist`, `tyear`, `byear`, `dyear`, `rdc_rfc`, `rdc_lcc`, `zero_nature`, `clim_sensi`, `use_ssp534`, `co2_only`, `load_conc`, `load_AGAGE`, `load_NOAA`, `fix_conc`, `fol`, `case`, `minus_rfc`, `fraction`, `rout3`, `ctag`, `climate_model`, `ref_compat`, `rcmip_csv`, `report_csv`, `first_year`, `last_year`, `chem`, `ocean`, `forcing`, `dat_dir`
+Fields: `scen`, `psce`, `psrc`, `hsrc`, `land`, `lcov`, `rgn`, `csec`, `ems`, `cm6mdl`, `rname`, `use_ncycle`, `ch4rfc`, `nat_grp`, `tproj`, `thist`, `tyear`, `byear`, `dyear`, `rdc_rfc`, `rdc_lcc`, `zero_nature`, `clim_sensi`, `use_ssp534`, `co2_only`, `load_conc`, `load_AGAGE`, `load_NOAA`, `fix_conc`, `co2_conc_initial`, `lnd_fb_1850`, `norgrwth_pre1850`, `fol`, `case`, `minus_rfc`, `fraction`, `minus_ems`, `rdc_ems`, `rdc_mix`, `use_cm`, `reduce_after_cm`, `rout3`, `cout5`, `ctag`, `climate_model`, `ref_compat`, `rcmip_csv`, `rcmip_compat_ems`, `report_csv`, `first_year`, `last_year`, `chem`, `ocean`, `forcing`, `dat_dir`
 
 ### `n_steps(cfg)`
 
@@ -63,6 +63,14 @@ Natural-forcing group: explicit cfg.nat_grp, else from --rname.
 
 The effective configuration: the rcmip3 overrides and time horizons.
 
+### `check_first_year(cfg)`
+
+--first_year: 1850, or 1750 with --scen=rcmip3; the 1750-only options need 1750.
+
+### `rcmip_sfx(cfg)`
+
+Suffix of the RCMIP3 input files: "" (1850 start) or "_1750" (--first_year=1750).
+
 ### `config_from_flags(flags)`
 
 RunConfig from --name=value flags (RunConfig or ChemOptions fields).
@@ -78,7 +86,7 @@ Physical constants shared by the SCM4OPT Python forward model.
 Values are those of the SCM4OPT v4.1 parameter definitions; keep them in sync.
 ```
 
-Constants: `CO2_0`, `CO2_CONC_1850`, `CO2_NPP_ZERO_CONC`, `DT`, `PPM2GTC`
+Constants: `CH4_CONC_1750`, `CO2_0`, `CO2_CONC_1750`, `CO2_CONC_INITIAL`, `CO2_NPP_ZERO_CONC`, `DT`, `N2O_CONC_1750`, `PPM2GTC`
 
 
 ## `scm4opt.core.errors`

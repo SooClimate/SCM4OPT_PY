@@ -206,6 +206,7 @@ scm4opt data verify           # scenario inputs against their checksums
 | `tests/test_regression.py` | four reference cases (contrib, rcmip3 with prescribed concentrations, rcmip3 with observations, Hector ocean) against `tests/reference/*.npz` (annual values of every output; tolerance 1e-10 relative) |
 | `tests/test_registry.py` | registry, units, RCMIP3 conversions, outputs of a run registered |
 | `tests/test_compat.py` | the corrected branches of `--ref_compat=0` (mass balance, heat, derivatives, conversions) |
+| `tests/test_compatible_emissions.py` | compatible CO2 emissions of a concentration-driven run reproduce its concentrations when run emission-driven; `--rcmip_compat_ems=1` changes only the two CO2 emission rows of the RCMIP3 export |
 | `tests/test_data.py` | inputs against the manifest; pack/fetch round trip |
 | `tests/test_export.py` | ensemble export reproduces the member values |
 
