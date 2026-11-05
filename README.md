@@ -1,12 +1,14 @@
 # SCM4OPT_PY
 
+[![PyPI](https://img.shields.io/pypi/v/scm4opt)](https://pypi.org/project/scm4opt/)
+
 The Python implementation of SCM4OPT (RCMIP3 model name `SCM4OPT(PY)v4.0`).
 SCM4OPT — **S**imple **C**limate **M**odel for **OPT**imization — is a reduced-complexity
 coupled climate model: carbon cycle (land, ocean, atmosphere), atmospheric chemistry,
 radiative forcing and the DOECLIM energy-balance model, at a 1/6-year time step.
 It runs scenario experiments (contribution analysis, RCMIP3) and parameter ensembles.
 
-Version 4.1.0.
+Version 4.1.1.
 
 ## Documentation
 

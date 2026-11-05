@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scm4opt"
-version = "4.1.0"
+version = "4.1.1"
 description = "SCM4OPT: Simple Climate Model for OPTimization (Python version)"
 readme = "README.md"
 license = "GPL-3.0-or-later"
@@ -15,6 +15,13 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Atmospheric Science",
 ]
 dependencies = ["numpy", "pandas", "scipy"]
+
+[project.urls]
+Homepage = "https://github.com/SooClimate/SCM4OPT_PY"
+Source = "https://github.com/SooClimate/SCM4OPT_PY"
+Documentation = "https://github.com/SooClimate/SCM4OPT_PY/tree/main/docs"
+Issues = "https://github.com/SooClimate/SCM4OPT_PY/issues"
+Data = "https://doi.org/10.5281/zenodo.23718272"
 
 [project.optional-dependencies]
 test = ["pytest"]

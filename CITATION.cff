@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below, together with the SCM4OPT papers listed under references."
 title: "SCM4OPT_PY: Simple Climate Model for OPTimization (Python implementation)"
-version: "4.1.0"
+version: "4.1.1"
 license: GPL-3.0-or-later
 type: software
 authors:
