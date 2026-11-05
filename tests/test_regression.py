@@ -30,6 +30,9 @@ def test_regression(case):
     missing = sorted(set(ref.files) - set(out))
     assert not missing, f"outputs missing: {missing[:10]}"
     for name in ref.files:
+        # atol relative to the output's scale: values near zero (e.g. a heat content
+        # crossing zero) differ by round-off between numpy/pandas versions
+        scale = np.nanmax(np.abs(ref[name]), initial=0.0)
         np.testing.assert_allclose(np.asarray(out[name], float)[::STRIDE], ref[name],
-                                   rtol=1e-10, atol=1e-12,
+                                   rtol=1e-10, atol=1e-12 + 1e-10 * scale,
                                    err_msg=name)
